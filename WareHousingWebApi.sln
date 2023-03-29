@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{78AE41BB-52A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WareHousing.WebApi", "WareHousing.WebApi\WareHousing.WebApi.csproj", "{0285C457-E9B2-4AD7-986B-D2287CEE769B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WareHousingWebApi.Data", "WareHousingWebApi.Data\WareHousingWebApi.Data.csproj", "{B6EFB373-B55C-4851-A844-35752BCBE11F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +19,17 @@ Global
 		{0285C457-E9B2-4AD7-986B-D2287CEE769B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0285C457-E9B2-4AD7-986B-D2287CEE769B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0285C457-E9B2-4AD7-986B-D2287CEE769B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6EFB373-B55C-4851-A844-35752BCBE11F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6EFB373-B55C-4851-A844-35752BCBE11F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6EFB373-B55C-4851-A844-35752BCBE11F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6EFB373-B55C-4851-A844-35752BCBE11F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0285C457-E9B2-4AD7-986B-D2287CEE769B} = {78AE41BB-52AD-4F43-A865-3534F61E2E32}
+		{B6EFB373-B55C-4851-A844-35752BCBE11F} = {78AE41BB-52AD-4F43-A865-3534F61E2E32}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3B7B6FE8-1A5B-4CD0-A7BF-1829E6F0BF35}
