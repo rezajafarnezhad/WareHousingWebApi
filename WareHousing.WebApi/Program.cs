@@ -39,7 +39,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseCors("WareHousingCors");
 

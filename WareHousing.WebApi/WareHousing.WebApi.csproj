@@ -22,4 +22,10 @@
     <ProjectReference Include="..\WareHousingWebApi.Data\WareHousingWebApi.Data.csproj" />
   </ItemGroup>
 
+  
+
+  <ItemGroup>
+    <Folder Include="wwwroot\upload\productimage\" />
+  </ItemGroup>
+
 </Project>
