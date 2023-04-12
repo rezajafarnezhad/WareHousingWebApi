@@ -7,13 +7,13 @@ namespace WareHousingWebApi.Data.Entities;
 public class Products
 {
     [Key]
-    public string ProductId { get; set; }
+    public int ProductId { get; set; }
     public int CountryId { get; set; }
     public int SupplierId { get; set; }
     public string ProductName { get; set; }
     public PackingType PackingType { get; set; }
-    public string CountInPacking { get; set; }
-    public string ProductWeight { get; set; }
+    public int CountInPacking { get; set; }
+    public int ProductWeight { get; set; }
     public string ProductImage { get; set; }
     [MaxLength(500,ErrorMessage ="حداکثر 500 کاراکتر")]
     public string ProductDescription { get; set; }

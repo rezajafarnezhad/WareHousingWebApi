@@ -12,8 +12,8 @@ using WareHousingWebApi.Data.DbContext;
 namespace WareHousingWebApi.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230326234010_1")]
-    partial class _1
+    [Migration("20230411194826_onee")]
+    partial class onee
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -131,6 +131,67 @@ namespace WareHousingWebApi.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Country", b =>
+                {
+                    b.Property<int>("CountryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CountryId"));
+
+                    b.Property<string>("CountryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CountryId");
+
+                    b.ToTable("Countries_tbl");
+                });
+
+            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Products", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
+
+                    b.Property<string>("CountInPacking")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("IsRefregerator")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int>("PackingType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductDescription")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ProductImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductWeight")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId");
+
+                    b.HasIndex("CountryId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("Products_tbl");
+                });
+
             modelBuilder.Entity("WareHousingWebApi.Data.Entities.Roles", b =>
                 {
                     b.Property<string>("Id")
@@ -158,6 +219,32 @@ namespace WareHousingWebApi.Data.Migrations
                     b.ToTable("Roles_tbl", (string)null);
                 });
 
+            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Supplier", b =>
+                {
+                    b.Property<int>("SupplierId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SupplierId"));
+
+                    b.Property<string>("SupplierDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SupplierName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SupplierSite")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SupplierTel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SupplierId");
+
+                    b.ToTable("Suppliers_tbl");
+                });
+
             modelBuilder.Entity("WareHousingWebApi.Data.Entities.Users", b =>
                 {
                     b.Property<string>("Id")
@@ -183,11 +270,9 @@ namespace WareHousingWebApi.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Family")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Gender")
@@ -200,7 +285,6 @@ namespace WareHousingWebApi.Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("MelliCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
@@ -215,7 +299,6 @@ namespace WareHousingWebApi.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PersonalCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -231,7 +314,6 @@ namespace WareHousingWebApi.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserImage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserName")
@@ -303,6 +385,25 @@ namespace WareHousingWebApi.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Products", b =>
+                {
+                    b.HasOne("WareHousingWebApi.Data.Entities.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WareHousingWebApi.Data.Entities.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+
+                    b.Navigation("Supplier");
                 });
 #pragma warning restore 612, 618
         }

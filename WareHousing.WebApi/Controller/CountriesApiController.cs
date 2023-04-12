@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using WareHousingWebApi.Data.Entities;
+using WareHousingWebApi.Data.Models;
 using WareHousingWebApi.Data.Services.Interface;
 
 namespace WareHousing.WebApi.Controller
@@ -50,7 +53,7 @@ namespace WareHousing.WebApi.Controller
         }
 
         [HttpGet("{Id}")]
-        public async Task<IActionResult> GetbyId(int Id)
+        public async Task<IActionResult> GetbyId([FromRoute]int Id)
         {
             var _country = await _context.CountryUw.GetById(Id);
             return _country == null? NotFound() : Ok(_country);
@@ -58,19 +61,19 @@ namespace WareHousing.WebApi.Controller
         }
 
         [HttpPut]
-        public async Task<IActionResult> Edit([FromForm] Country datamodel)
+        public async Task<IActionResult> Edit([FromForm] CountryEditModel model)
         {
-            if(string.IsNullOrWhiteSpace(datamodel.CountryName)) return BadRequest(ModelState);
+            if(string.IsNullOrWhiteSpace(model.CountryName)) return BadRequest(ModelState);
 
             //تکراری نبودن
-            var countries = await _context.CountryUw.Get(c => c.CountryName == datamodel.CountryName);
+            var countries = await _context.CountryUw.Get(c => c.CountryName == model.CountryName && c.CountryId != model.CountryId);
             if(countries.Count()>0)
                 return StatusCode(550);
             try
             {
-                var _country = await _context.CountryUw.GetById(datamodel.CountryId);
+                var _country = await _context.CountryUw.GetById(model.CountryId);
                 if (_country == null) return NotFound();
-                _country.CountryName = datamodel.CountryName;
+                _country.CountryName = model.CountryName;
                 _context.CountryUw.Update(_country);
                 await _context.SaveAsync();
                 return Ok(_country);
@@ -84,5 +87,14 @@ namespace WareHousing.WebApi.Controller
 
         }
 
+        [HttpGet("CountriesListForDropDown")]
+        public async Task<IActionResult> CountriesListForDropDown() 
+        {
+            var data = await _context.CountryUw.GetEn.ToDictionaryAsync(c=>c.CountryId,c=>c.CountryName);
+            return Ok(JsonConvert.SerializeObject(data));
+        }
+            
+
     }
+
 }

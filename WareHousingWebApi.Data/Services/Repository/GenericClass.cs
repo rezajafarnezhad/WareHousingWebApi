@@ -43,6 +43,7 @@ public class GenericClass<Tentity> where Tentity : class
     {
         IQueryable<Tentity> query = _table;
         if (whereVariable != null) query = query.Where(whereVariable);
+      
         if (!string.IsNullOrWhiteSpace(JoinString))
         {
             foreach (var item in JoinString.Split(','))
@@ -54,4 +55,7 @@ public class GenericClass<Tentity> where Tentity : class
         return await query.ToListAsync();
 
     }
+
+    public IQueryable<Tentity> GetEn => _table;
+    public IQueryable<Tentity> GetEnNoTraking => _table.AsNoTracking();
 }
