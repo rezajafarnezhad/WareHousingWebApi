@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WareHousingWebApi.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class onee : Migration
+    public partial class one : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -118,8 +118,8 @@ namespace WareHousingWebApi.Data.Migrations
                     SupplierId = table.Column<int>(type: "int", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PackingType = table.Column<int>(type: "int", nullable: false),
-                    CountInPacking = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductWeight = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CountInPacking = table.Column<int>(type: "int", nullable: false),
+                    ProductWeight = table.Column<int>(type: "int", nullable: false),
                     ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductDescription = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     IsRefregerator = table.Column<byte>(type: "tinyint", nullable: false)

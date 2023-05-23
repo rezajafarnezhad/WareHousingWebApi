@@ -12,8 +12,8 @@ using WareHousingWebApi.Data.DbContext;
 namespace WareHousingWebApi.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230411225836_onees")]
-    partial class onees
+    [Migration("20230504072838_one")]
+    partial class one
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

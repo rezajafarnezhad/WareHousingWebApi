@@ -55,7 +55,7 @@ namespace WareHousing.WebApi.Controller
                 return StatusCode(500);
             }
 
-
+            
         }
 
         [HttpGet("{Id}")]
@@ -92,6 +92,7 @@ namespace WareHousing.WebApi.Controller
                 _product.SupplierId = model.SupplierId;
                 _product.PackingType = model.PackingType;
                 _product.IsRefregerator = model.IsRefregerator;
+                _product.ProductImage = model.ProductImage;
                 _context.productsUw.Update(_product);
                 await _context.SaveAsync();
                 return Ok(_product);
@@ -102,10 +103,10 @@ namespace WareHousing.WebApi.Controller
 
             }
 
-
         }
 
     }
+    //kk
 
 }
 
