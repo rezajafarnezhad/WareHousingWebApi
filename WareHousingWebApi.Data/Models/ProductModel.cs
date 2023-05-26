@@ -9,6 +9,9 @@ namespace WareHousingWebApi.Data.Models
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "نام را وارد کنید")]
         public string ProductName { get; set; }
+        [Required(AllowEmptyStrings = false, ErrorMessage = "کد را وارد کنید")]
+
+        public int ProductCode { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "نوع بسته بندی کالا انتخاب نشده")]
         public PackingType PackingType { get; set; }

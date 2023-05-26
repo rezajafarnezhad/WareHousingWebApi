@@ -82,8 +82,8 @@ namespace WareHousing.WebApi.Controller
 
                 _supplier.SupplierName = model.SupplierName.Trim();
                 _supplier.SupplierTel = model.SupplierTel.Trim();
-                _supplier.SupplierDescription = model.SupplierDescription.Trim();
-                _supplier.SupplierSite = model.SupplierSite.Trim();
+                _supplier.SupplierDescription = model.SupplierDescription;
+                _supplier.SupplierSite = model.SupplierSite;
                 
                 _context.SupplierUw.Update(_supplier);
                 await _context.SaveAsync();

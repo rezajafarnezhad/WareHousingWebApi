@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WareHousingWebApi.Data.Entities;
 using WareHousingWebApi.Data.Models;
 using WareHousingWebApi.Data.Services.Interface;
@@ -27,14 +28,15 @@ namespace WareHousing.WebApi.Controller
             if (!ModelState.IsValid) return BadRequest(model);
 
             //کنترل تکراری نبودن
-            var product = await _context.productsUw.Get(c => c.ProductName == model.ProductName);
-            if (product.Count() > 0)
+            var product = await _context.productsUw.Get();
+            if (product.Any(c => c.ProductName == model.ProductName))
                 return StatusCode(550);
 
             try
             {
                 var _product = new Products()
                 {
+                    ProductCode = model.ProductCode,
                     ProductName = model.ProductName,
                     ProductWeight = model.ProductWeight,
                     ProductDescription = model.ProductDescription,
@@ -73,7 +75,7 @@ namespace WareHousing.WebApi.Controller
                 return BadRequest(model);
 
             //کنترل تکراری نبودن
-            var product = await _context.productsUw.Get(c => c.ProductName == model.ProductName && c.ProductId != model.ProductId);
+            var product = await _context.productsUw.GetEn.Where(c => c.ProductName == model.ProductName || c.ProductCode == model.ProductCode).Where(c=> c.ProductId != model.ProductId).ToListAsync();
 
 
             if (product.Count() > 0)
@@ -85,6 +87,7 @@ namespace WareHousing.WebApi.Controller
                 if (_product == null) return NotFound();
 
                 _product.ProductName = model.ProductName;
+                _product.ProductCode = model.ProductCode;
                 _product.ProductDescription = model.ProductDescription;
                 _product.ProductWeight = model.ProductWeight;
                 _product.CountInPacking = model.CountInPacking;
