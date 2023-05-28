@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WareHousingWebApi.Data.Entities;
 using WareHousingWebApi.Data.Models;
@@ -11,9 +12,11 @@ namespace WareHousing.WebApi.Controller
     public class ProductsApiController : ControllerBase
     {
         private readonly IUnitOfWork _context;
-        public ProductsApiController(IUnitOfWork context)
+        private readonly IMapper _mapper;
+        public ProductsApiController(IUnitOfWork context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -34,23 +37,11 @@ namespace WareHousing.WebApi.Controller
 
             try
             {
-                var _product = new Products()
-                {
-                    ProductCode = model.ProductCode,
-                    ProductName = model.ProductName,
-                    ProductWeight = model.ProductWeight,
-                    ProductDescription = model.ProductDescription,
-                    ProductImage = model.ProductImage,
-                    CountInPacking = model.CountInPacking,
-                    IsRefregerator = model.IsRefregerator,
-                    CountryId = model.CountryId,
-                    SupplierId = model.SupplierId,
-                    PackingType = model.PackingType,
 
-                };
-                await _context.productsUw.Create(_product);
+                var mProduct = _mapper.Map(model,new Products());
+                await _context.productsUw.Create(mProduct);
                 await _context.SaveAsync();
-                return Ok(_product);
+                return Ok(mProduct);
             }
             catch (Exception)
             {
@@ -86,19 +77,11 @@ namespace WareHousing.WebApi.Controller
                 var _product = await _context.productsUw.GetById(model.ProductId);
                 if (_product == null) return NotFound();
 
-                _product.ProductName = model.ProductName;
-                _product.ProductCode = model.ProductCode;
-                _product.ProductDescription = model.ProductDescription;
-                _product.ProductWeight = model.ProductWeight;
-                _product.CountInPacking = model.CountInPacking;
-                _product.CountryId = model.CountryId;
-                _product.SupplierId = model.SupplierId;
-                _product.PackingType = model.PackingType;
-                _product.IsRefregerator = model.IsRefregerator;
-                _product.ProductImage = model.ProductImage;
-                _context.productsUw.Update(_product);
+
+                var mProduct = _mapper.Map(model,_product);
+                _context.productsUw.Update(mProduct);
                 await _context.SaveAsync();
-                return Ok(_product);
+                return Ok(mProduct);
             }
             catch (Exception)
             {

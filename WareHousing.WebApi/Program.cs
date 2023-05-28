@@ -16,6 +16,11 @@ builder.Services.AddSwaggerGen();
 
 var Configuration = builder.Configuration.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(FileNamesExtensions.AppSettingName).Build();
 
+//AutoMapper
+
+builder.Services.AddAutoMapper(typeof(Program));
+
+
 //اضافه کردن دیتابیس
 builder.Services.AddDbContextService(Configuration);
 
@@ -23,6 +28,7 @@ builder.Services.AddDbContextService(Configuration);
 builder.Services.AddIdentityService(Configuration);
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 builder.Services.AddCors(options =>
 {
