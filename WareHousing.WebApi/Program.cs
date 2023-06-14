@@ -1,6 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using WareHousing.WebApi.Extensions;
+using WareHousing.WebApi.Tools;
+using WareHousing.WebApi.Tools.Interface;
 using WareHousingWebApi.Data.DbContext;
 using WareHousingWebApi.Data.Services.Interface;
 using WareHousingWebApi.Data.Services.Repository;
@@ -13,6 +15,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IJwtTokenGenerator,JwtTokenGenerator>();
 
 var Configuration = builder.Configuration.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(FileNamesExtensions.AppSettingName).Build();
 
