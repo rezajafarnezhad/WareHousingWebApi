@@ -14,31 +14,29 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IJwtTokenGenerator,JwtTokenGenerator>();
 
 var Configuration = builder.Configuration.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile(FileNamesExtensions.AppSettingName).Build();
-
+//اضافه کردن دیتابیس
+builder.Services.AddDbContextService(Configuration);
 //AutoMapper
 
 builder.Services.AddAutoMapper(typeof(Program));
-
-
-//اضافه کردن دیتابیس
-builder.Services.AddDbContextService(Configuration);
-
 //اضافه کردن Identity
 builder.Services.AddIdentityService(Configuration);
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IFiscalYearRepo,FiscalYearRepo>();
 
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "WareHousingCors", builder =>
     {
-        
-        builder.AllowAnyHeader().AllowAnyMethod().AllowCredentials().SetIsOriginAllowed((host)=>true);
+
+        builder.AllowAnyHeader().AllowAnyMethod().AllowCredentials().SetIsOriginAllowed((host) => true);
 
     });
 

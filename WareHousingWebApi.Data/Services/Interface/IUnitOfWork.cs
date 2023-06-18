@@ -10,6 +10,8 @@ namespace WareHousingWebApi.Data.Services.Interface
         GenericClass<Supplier> SupplierUw { get; }
         GenericClass<Roles> rolesUw { get; }
         GenericClass<Users> usersUw { get; }
+        GenericClass<FiscalYear> fiscalYear { get; }
+        GenericClass<WareHouse> wareHouse { get; }
 
         void Save();
         Task SaveAsync();

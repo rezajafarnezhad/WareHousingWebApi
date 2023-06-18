@@ -42,4 +42,3 @@ namespace WareHousingWebApi.Data.Models
 
     }
 }
-

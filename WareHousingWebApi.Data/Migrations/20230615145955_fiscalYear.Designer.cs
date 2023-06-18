@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WareHousingWebApi.Data.DbContext;
 
@@ -11,9 +12,11 @@ using WareHousingWebApi.Data.DbContext;
 namespace WareHousingWebApi.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230615145955_fiscalYear")]
+    partial class fiscalYear
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -367,36 +370,6 @@ namespace WareHousingWebApi.Data.Migrations
                     b.ToTable("Users_tbl", (string)null);
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.WareHouse", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Tell")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("wareHouses_tbl");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("WareHousingWebApi.Data.Entities.Roles", null)
@@ -465,15 +438,6 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Navigation("Country");
 
                     b.Navigation("Supplier");
-                });
-
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.WareHouse", b =>
-                {
-                    b.HasOne("WareHousingWebApi.Data.Entities.Users", "Users")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

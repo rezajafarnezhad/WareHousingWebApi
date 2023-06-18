@@ -13,6 +13,8 @@ public class ApplicationDbContext : IdentityDbContext<Users, Roles, string>
     public DbSet<Products> Products_tbl { get; set; }
     public DbSet<Country> Countries_tbl { get; set; }
     public DbSet<Supplier> Suppliers_tbl { get; set; }
+    public DbSet<FiscalYear> FiscalYears_tbl { get; set; }
+    public DbSet<WareHouse> wareHouses_tbl { get; set; }
     #endregion
 
 

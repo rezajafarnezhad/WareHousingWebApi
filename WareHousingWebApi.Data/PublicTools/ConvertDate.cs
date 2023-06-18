@@ -1,6 +1,6 @@
 ﻿using MD.PersianDateTime.Standard;
 
-namespace WareHousing.WebApi.Tools;
+namespace WareHousingWebApi.Data.PublicTools;
 
 public static class ConvertDate
 {

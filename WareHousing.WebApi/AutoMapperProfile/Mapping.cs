@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using WareHousing.WebApi.Tools;
 using WareHousingWebApi.Data.Entities;
 using WareHousingWebApi.Data.Models;
+using WareHousingWebApi.Data.PublicTools;
+
 
 namespace WareHousing.WebApi.AutoMapperProfile
 {
@@ -14,7 +17,21 @@ namespace WareHousing.WebApi.AutoMapperProfile
             this.CreateMap<ProductCreatModel, Products>().ReverseMap();
 
 
+            var date = DateTime.Now.ToString();
+            this.CreateMap<CreateFiscalYear, FiscalYear>()
 
+                .ForMember(c=>c.StartDate ,
+                    op=>
+                        op.MapFrom(x=>x.StartDate.ConvertShamsiToMiladi()))
+
+                .ForMember(c => c.EndDate,
+                    op =>
+                        op.MapFrom(x => x.EndDate.ConvertShamsiToMiladi()))
+
+                .ReverseMap();
+
+
+            this.CreateMap<WareHouse,CreateWareHouse>().ReverseMap();
         }
 
     }

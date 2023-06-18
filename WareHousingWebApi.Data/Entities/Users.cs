@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace WareHousingWebApi.Data.Entities;
 
@@ -18,7 +17,3 @@ public class Users : IdentityUser<string>
 
     public bool Gender { get; set; }
 }
-
-
-
-
