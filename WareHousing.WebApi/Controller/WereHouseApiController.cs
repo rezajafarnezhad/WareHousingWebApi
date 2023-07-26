@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using WareHousingWebApi.Data.Entities;
 using WareHousingWebApi.Data.Models;
 using WareHousingWebApi.Data.Services.Interface;
@@ -90,5 +92,14 @@ public class WereHouseApiController : ControllerBase
             return StatusCode(500);
 
         }
+    }
+
+    [HttpGet("GetWareHouseForDropDown")]
+    public async Task<IActionResult> GetWareHouseForDropDown()
+    {
+
+        var data = await _unitOfWork.wareHouse.GetEn.ToDictionaryAsync(c => c.Id, c => c.Name);
+        return Ok(JsonConvert.SerializeObject(data));
+
     }
 }

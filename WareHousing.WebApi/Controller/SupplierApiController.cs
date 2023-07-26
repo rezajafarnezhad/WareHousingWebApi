@@ -24,7 +24,7 @@ namespace WareHousing.WebApi.Controller
         }
 
         [HttpPost]
-        public async Task<IActionResult> Craate([FromForm] SupplierModel model)
+        public async Task<IActionResult> Craate(SupplierModel model)
         {
             if (!ModelState.IsValid) return BadRequest(model);
 
@@ -55,7 +55,7 @@ namespace WareHousing.WebApi.Controller
         }
 
         [HttpGet("{Id}")]
-        public async Task<IActionResult> GetbyId([FromRoute] int Id)
+        public async Task<IActionResult> GetbyId(int Id)
         {
             var _supplier = await _context.SupplierUw.GetById(Id);
             return _supplier == null ? NotFound() : Ok(_supplier);
@@ -63,7 +63,7 @@ namespace WareHousing.WebApi.Controller
         }
 
         [HttpPut]
-        public async Task<IActionResult> Edit([FromForm] SupplierEditModel model)
+        public async Task<IActionResult> Edit(SupplierEditModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(model);
@@ -73,7 +73,7 @@ namespace WareHousing.WebApi.Controller
           
 
             if (supplier.Count() > 0)
-                return StatusCode(550);
+                return StatusCode(550,"ss");
 
             try
             {

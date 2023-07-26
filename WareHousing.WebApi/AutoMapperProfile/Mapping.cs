@@ -32,6 +32,13 @@ namespace WareHousing.WebApi.AutoMapperProfile
 
 
             this.CreateMap<WareHouse,CreateWareHouse>().ReverseMap();
+
+            this.CreateMap<ProductPrice,CreateProductPrice>().ReverseMap()
+                .ForMember(c => c.ActionDate,
+                    op =>
+                        op.MapFrom(x => x.ActionDate.ConvertShamsiToMiladi()))
+
+                ;
         }
 
     }

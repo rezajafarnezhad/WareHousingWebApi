@@ -20,6 +20,8 @@ namespace WareHousingWebApi.Data.Services.Repository
         private GenericClass<Country> _Country;
         private GenericClass<FiscalYear> _fiscalYear;
         private GenericClass<WareHouse> _wareHouse;
+        private GenericClass<Inventory> _inventory;
+        private GenericClass<ProductPrice> _productPrice;
 
         public GenericClass<Users> usersUw
         {
@@ -32,7 +34,16 @@ namespace WareHousingWebApi.Data.Services.Repository
             }
         }
 
+        public GenericClass<ProductPrice> productPriceUW
+        {
+            get
+            {
+                if (_productPrice == null)
+                    _productPrice = new GenericClass<ProductPrice>(_context);
 
+                return _productPrice;
+            }
+        }
         public GenericClass<FiscalYear> fiscalYear
         {
             get
@@ -41,6 +52,16 @@ namespace WareHousingWebApi.Data.Services.Repository
                     _fiscalYear = new GenericClass<FiscalYear>(_context);
 
                 return _fiscalYear;
+            }
+        } 
+        public GenericClass<Inventory> inventory
+        {
+            get
+            {
+                if (_inventory == null)
+                    _inventory = new GenericClass<Inventory>(_context);
+
+                return _inventory;
             }
         }
 

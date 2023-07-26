@@ -29,6 +29,8 @@ builder.Services.AddIdentityService(Configuration);
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IFiscalYearRepo,FiscalYearRepo>();
+builder.Services.AddScoped<IInventoryRepo,InventoryRepo>();
+builder.Services.AddScoped<IProductPriceRepo,ProductPriceRepo>();
 
 
 builder.Services.AddCors(options =>
