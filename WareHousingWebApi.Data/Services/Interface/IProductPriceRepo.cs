@@ -1,4 +1,4 @@
-﻿using WareHousingWebApi.Data.Models;
+﻿using WareHousingWebApi.Entities.Models;
 
 namespace WareHousingWebApi.Data.Services.Interface;
 

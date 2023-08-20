@@ -1,6 +1,6 @@
 ﻿using WareHousingWebApi.Data.DbContext;
-using WareHousingWebApi.Data.Entities;
 using WareHousingWebApi.Data.Services.Interface;
+using WareHousingWebApi.Entities.Entities;
 
 namespace WareHousingWebApi.Data.Services.Repository
 {

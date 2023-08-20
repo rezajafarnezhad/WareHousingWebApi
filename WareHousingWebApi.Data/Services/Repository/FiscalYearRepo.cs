@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using WareHousingWebApi.Common.PublicTools;
 using WareHousingWebApi.Data.DbContext;
-using WareHousingWebApi.Data.PublicTools;
 using WareHousingWebApi.Data.Services.Interface;
 
 namespace WareHousingWebApi.Data.Services.Repository;

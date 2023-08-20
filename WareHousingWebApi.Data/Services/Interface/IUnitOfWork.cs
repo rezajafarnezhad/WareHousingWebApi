@@ -1,5 +1,6 @@
-﻿using WareHousingWebApi.Data.Entities;
+﻿
 using WareHousingWebApi.Data.Services.Repository;
+using WareHousingWebApi.Entities.Entities;
 
 namespace WareHousingWebApi.Data.Services.Interface
 {

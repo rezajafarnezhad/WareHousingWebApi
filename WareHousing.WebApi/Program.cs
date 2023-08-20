@@ -1,11 +1,9 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using WareHousing.WebApi.Extensions;
-using WareHousing.WebApi.Tools;
-using WareHousing.WebApi.Tools.Interface;
-using WareHousingWebApi.Data.DbContext;
+﻿
 using WareHousingWebApi.Data.Services.Interface;
 using WareHousingWebApi.Data.Services.Repository;
+using WareHousingWebApi.Services.jwtService;
+using WareHousingWebApi.Services.jwtService.Interface;
+using WareHousingWebApi.WebFramework.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

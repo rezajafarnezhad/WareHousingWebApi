@@ -1,16 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
- 
-
   <ItemGroup>
-    <ProjectReference Include="..\WareHousingWebApi.Entities\WareHousingWebApi.Entities.csproj" />
+    <ProjectReference Include="..\WareHousingWebApi.Common\WareHousingWebApi.Common.csproj" />
   </ItemGroup>
-
- 
 
 </Project>

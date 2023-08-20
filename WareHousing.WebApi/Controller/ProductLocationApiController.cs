@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using WareHousingWebApi.Data.Entities;
+
 using WareHousingWebApi.Data.Services.Interface;
+using WareHousingWebApi.Entities.Entities;
+using WareHousingWebApi.Entities.Models;
 
 namespace WareHousing.WebApi.Controller;
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WareHousingWebApi.Data.DbContext;
 using WareHousingWebApi.Data.Services.Interface;
+using WareHousingWebApi.Entities.Models;
 
 namespace WareHousingWebApi.Data.Services.Repository;
 

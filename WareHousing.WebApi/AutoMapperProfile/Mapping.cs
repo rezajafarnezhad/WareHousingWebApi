@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using WareHousing.WebApi.Tools;
-using WareHousingWebApi.Data.Entities;
-using WareHousingWebApi.Data.Models;
-using WareHousingWebApi.Data.PublicTools;
+using WareHousingWebApi.Common.PublicTools;
+using WareHousingWebApi.Entities.Entities;
+using WareHousingWebApi.Entities.Models;
 
 
 namespace WareHousing.WebApi.AutoMapperProfile

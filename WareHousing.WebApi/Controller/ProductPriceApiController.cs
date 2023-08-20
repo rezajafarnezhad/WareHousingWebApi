@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
-using WareHousingWebApi.Data.Entities;
-using WareHousingWebApi.Data.Models;
-using WareHousingWebApi.Data.PublicTools;
+using WareHousingWebApi.Common.PublicTools;
+
 using WareHousingWebApi.Data.Services.Interface;
+using WareHousingWebApi.Entities.Entities;
+using WareHousingWebApi.Entities.Models;
 
 namespace WareHousing.WebApi.Controller;
 

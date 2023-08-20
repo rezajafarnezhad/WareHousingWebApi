@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using WareHousing.WebApi.Tools.Interface;
-using WareHousingWebApi.Data.Entities;
-using WareHousingWebApi.Data.Models;
+using WareHousingWebApi.Entities.Entities;
+using WareHousingWebApi.Entities.Models;
+using WareHousingWebApi.Services.jwtService.Interface;
 
 namespace WareHousing.WebApi.Controller;
 

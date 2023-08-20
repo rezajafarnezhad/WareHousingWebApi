@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WareHousing.WebApi.Tools;
-using WareHousingWebApi.Data.Entities;
-using WareHousingWebApi.Data.Models;
-using WareHousingWebApi.Data.PublicTools;
+using WareHousingWebApi.Common.PublicTools;
 using WareHousingWebApi.Data.Services.Interface;
+using WareHousingWebApi.Entities.Entities;
+using WareHousingWebApi.Entities.Models;
 
 namespace WareHousing.WebApi.Controller
 {

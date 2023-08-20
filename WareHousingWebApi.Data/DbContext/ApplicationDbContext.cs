@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using WareHousingWebApi.Data.Entities;
+using WareHousingWebApi.Entities.Entities;
 
 namespace WareHousingWebApi.Data.DbContext;
 

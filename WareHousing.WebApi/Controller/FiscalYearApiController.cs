@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using WareHousingWebApi.Data.Entities;
-using WareHousingWebApi.Data.PublicTools;
+using WareHousingWebApi.Common.PublicTools;
+
 using WareHousingWebApi.Data.Services.Interface;
+using WareHousingWebApi.Entities.Entities;
+using WareHousingWebApi.Entities.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WareHousing.WebApi.Controller;
