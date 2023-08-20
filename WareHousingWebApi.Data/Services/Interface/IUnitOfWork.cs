@@ -14,6 +14,7 @@ namespace WareHousingWebApi.Data.Services.Interface
         GenericClass<WareHouse> wareHouse { get; } 
         GenericClass<Inventory> inventory { get; }
         GenericClass<ProductPrice> productPriceUW  { get; }
+        GenericClass<ProductLocation> productLocationUW  { get; }
 
         void Save();
         Task SaveAsync();

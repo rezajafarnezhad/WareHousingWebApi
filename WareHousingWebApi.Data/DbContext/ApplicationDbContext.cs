@@ -17,6 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<Users, Roles, string>
     public DbSet<WareHouse> wareHouses_tbl { get; set; }
     public DbSet<Inventory> Inventories_tbl { get; set; }
     public DbSet<ProductPrice> ProductPrices_tbl{ get; set; }
+    public DbSet<ProductLocation> ProductLocation_tbl{ get; set; }
     #endregion
 
 

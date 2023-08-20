@@ -59,4 +59,33 @@ public class ProductPriceApiController : ControllerBase
         return Ok(_productPrice);
 
     }
+
+    [HttpGet("GetProductPriceHistory/{productId}/{fiscalYearId}")]
+    public async Task<IEnumerable<ProductPrice>> GetProductPriceHistory([FromRoute] int productId, int fiscalYearId)
+    {
+        var data = await _context.productPriceUW
+            .Get(c => c.ProductId == productId && c.FiscalYearId == fiscalYearId);
+        return data;
+    }
+
+    [HttpDelete("{Id}")]
+    public async Task<IActionResult> DeletePrice([FromRoute] int Id)
+    {
+        if (Id == 0)
+            return StatusCode(510);
+
+        var _productPrice = await _context.productPriceUW.GetById(Id);
+        if (_productPrice.ActionDate > DateTime.Now.Date)
+        {
+            _context.productPriceUW.DeleteById(Id);
+            await _context.SaveAsync();
+            return Ok(200);
+        }
+        else
+        {
+            return StatusCode(515);
+
+        }
+
+    }
 }

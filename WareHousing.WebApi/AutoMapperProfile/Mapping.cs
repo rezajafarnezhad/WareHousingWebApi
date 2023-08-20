@@ -39,6 +39,13 @@ namespace WareHousing.WebApi.AutoMapperProfile
                         op.MapFrom(x => x.ActionDate.ConvertShamsiToMiladi()))
 
                 ;
+
+
+            this.CreateMap<CreateProductLocation,ProductLocation>().ReverseMap();
+            this.CreateMap<EditProductLocation, ProductLocation>().ReverseMap();
+
+
+
         }
 
     }
