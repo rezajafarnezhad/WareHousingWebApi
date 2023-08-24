@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using WareHousingWebApi.Common.PublicTools;
 using WareHousingWebApi.Data.Services.Interface;
 using WareHousingWebApi.Entities.Entities;
 using WareHousingWebApi.Entities.Models;
+using WareHousingWebApi.WebFramework.ApiResult;
 
 namespace WareHousing.WebApi.Controller;
 
@@ -19,68 +21,143 @@ public class CountriesApiController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Country>> Get()
+    public async Task<ApiResponse<IEnumerable<Country>>> Get()
     {
-        return await _context.CountryUw.Get();
+        var countryList = await _context.CountryUw.Get();
+
+        return new ApiResponse<IEnumerable<Country>>()
+        {
+            flag = true,
+            Data = countryList,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName(),
+        };
     }
 
     [HttpPost]
-    public async Task<IActionResult> Craate([FromForm] string CountryName) 
+    public async Task<ApiResponse> Craate([FromForm] string countryName, [FromForm] string userId)
     {
-        if (string.IsNullOrWhiteSpace(CountryName)) return BadRequest(ModelState);
+        if (string.IsNullOrWhiteSpace(countryName))
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.BadRequest,
+                Message = ApiStatusCode.BadRequest.GetEnumDisplayName(),
+            };
 
         //کنترل تکراری نبودن
-        var country = await _context.CountryUw.Get(c=>c.CountryName == CountryName);
+        var country = await _context.CountryUw.Get(c => c.CountryName == countryName);
         if (country.Count() > 0)
-            return StatusCode(550);
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.DuplicateInformation,
+                Message = ApiStatusCode.DuplicateInformation.GetEnumDisplayName(),
+            };
 
         try
         {
             var _country = new Country()
             {
-                CountryName = CountryName,
+                CountryName = countryName,
+                UserId = userId,
+                CreateDateTime = DateTime.Now.ToString()
             };
             await _context.CountryUw.Create(_country);
             await _context.SaveAsync();
-            return Ok(_country);
+            return new ApiResponse<Country>()
+            {
+                flag = true,
+                Data = _country,
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName(),
+            };
         }
         catch (Exception)
         {
-            return StatusCode(500);
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.ServerError,
+                Message = ApiStatusCode.ServerError.GetEnumDisplayName(),
+            };
         }
-        
-        
+
+
     }
 
-    [HttpGet("{Id}")]
-    public async Task<IActionResult> GetbyId([FromRoute]int Id)
+    [HttpGet("{id}")]
+    public async Task<ApiResponse> GetById([FromRoute] int id)
     {
-        var _country = await _context.CountryUw.GetById(Id);
-        return _country == null? NotFound() : Ok(_country);
+        var _country = await _context.CountryUw.GetById(id);
 
+        return _country != null
+            ? new ApiResponse<Country>
+            {
+                flag = true,
+                Data = _country,
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName()
+            }
+            : new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.NotFound,
+                Message = ApiStatusCode.NotFound.GetEnumDisplayName()
+            };
     }
 
     [HttpPut]
-    public async Task<IActionResult> Edit([FromForm] CountryEditModel model)
+    public async Task<ApiResponse> Edit([FromForm] CountryEditModel model)
     {
-        if(string.IsNullOrWhiteSpace(model.CountryName)) return BadRequest(ModelState);
+        if (string.IsNullOrWhiteSpace(model.CountryName))
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.BadRequest,
+                Message = ApiStatusCode.BadRequest.GetEnumDisplayName(),
+            };
 
         //تکراری نبودن
         var countries = await _context.CountryUw.Get(c => c.CountryName == model.CountryName && c.CountryId != model.CountryId);
-        if(countries.Count()>0)
-            return StatusCode(550);
+        if (countries.Count() > 0)
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.DuplicateInformation,
+                Message = ApiStatusCode.DuplicateInformation.GetEnumDisplayName(),
+            };
         try
         {
             var _country = await _context.CountryUw.GetById(model.CountryId);
-            if (_country == null) return NotFound();
+
+            if (_country == null)
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.NotFound,
+                    Message = ApiStatusCode.NotFound.GetEnumDisplayName(),
+                };
+
             _country.CountryName = model.CountryName;
             _context.CountryUw.Update(_country);
             await _context.SaveAsync();
-            return Ok(_country);
+            return new ApiResponse<Country>()
+            {
+                flag = true,
+                Data = _country,
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName(),
+            };
         }
         catch (Exception)
         {
-            return StatusCode(500);
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.ServerError,
+                Message = ApiStatusCode.ServerError.GetEnumDisplayName(),
+            };
 
         }
 
@@ -88,11 +165,17 @@ public class CountriesApiController : ControllerBase
     }
 
     [HttpGet("CountriesListForDropDown")]
-    public async Task<IActionResult> CountriesListForDropDown() 
+    public async Task<ApiResponse> CountriesListForDropDown()
     {
-        var data = await _context.CountryUw.GetEn.ToDictionaryAsync(c=>c.CountryId,c=>c.CountryName);
-        return Ok(JsonConvert.SerializeObject(data));
+        var data = await _context.CountryUw.GetEn.ToDictionaryAsync(c => c.CountryId, c => c.CountryName);
+        return new ApiResponse<Dictionary<int, string>>()
+        {
+            flag = true,
+            Data = data,
+            StatusCode= ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName(),
+        };
     }
-            
+
 
 }

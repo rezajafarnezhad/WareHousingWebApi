@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using WareHousingWebApi.Entities.Base;
 
 namespace WareHousingWebApi.Entities.Entities;
 
-public class Users : IdentityUser<string>
+public class Users : IdentityUser<string> , IEntityObject
 {
     public string FirstName { get; set; }
     public string Family { get; set; }

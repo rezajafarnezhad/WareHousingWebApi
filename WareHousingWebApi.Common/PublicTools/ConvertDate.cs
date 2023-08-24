@@ -11,7 +11,7 @@ public static class ConvertDate
         return pdate.ToDateTime();
     } 
     
-    public static string ConvertMiladiToShamsi(DateTime Miladidate,string format)
+    public static string ConvertMiladiToShamsi(this DateTime Miladidate,string format)
     {
         //1403/02/12
 

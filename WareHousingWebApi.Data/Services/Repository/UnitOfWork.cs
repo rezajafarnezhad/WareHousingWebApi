@@ -55,7 +55,7 @@ namespace WareHousingWebApi.Data.Services.Repository
                 return _productLocation;
             }
         }
-        public GenericClass<FiscalYear> fiscalYear
+        public GenericClass<FiscalYear> fiscalYearUw
         {
             get
             {
@@ -65,7 +65,7 @@ namespace WareHousingWebApi.Data.Services.Repository
                 return _fiscalYear;
             }
         } 
-        public GenericClass<Inventory> inventory
+        public GenericClass<Inventory> inventoryUw
         {
             get
             {
@@ -76,7 +76,7 @@ namespace WareHousingWebApi.Data.Services.Repository
             }
         }
 
-        public GenericClass<WareHouse> wareHouse
+        public GenericClass<WareHouse> wareHouseUw
         {
             get
             {

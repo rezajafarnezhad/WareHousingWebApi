@@ -12,8 +12,8 @@ using WareHousingWebApi.Data.DbContext;
 namespace WareHousingWebApi.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230818075654_ProductLocation")]
-    partial class ProductLocation
+    [Migration("20230823133829_ukssakkss")]
+    partial class ukssakkss
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -131,7 +131,7 @@ namespace WareHousingWebApi.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Country", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Country", b =>
                 {
                     b.Property<int>("CountryId")
                         .ValueGeneratedOnAdd()
@@ -142,12 +142,20 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Property<string>("CountryName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CreateDateTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("CountryId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Countries_tbl");
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.FiscalYear", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.FiscalYear", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -171,20 +179,25 @@ namespace WareHousingWebApi.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("FiscalYears_tbl");
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Inventory", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Inventory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreateDateTime")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -229,7 +242,7 @@ namespace WareHousingWebApi.Data.Migrations
                     b.ToTable("Inventories_tbl");
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.ProductLocation", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.ProductLocation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -237,8 +250,8 @@ namespace WareHousingWebApi.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("CreateDateTime")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductLocationAddress")
                         .HasColumnType("nvarchar(max)");
@@ -258,7 +271,7 @@ namespace WareHousingWebApi.Data.Migrations
                     b.ToTable("ProductLocation_tbl");
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.ProductPrice", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.ProductPrice", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -301,7 +314,7 @@ namespace WareHousingWebApi.Data.Migrations
                     b.ToTable("ProductPrices_tbl");
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Products", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Products", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -314,6 +327,9 @@ namespace WareHousingWebApi.Data.Migrations
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
+
+                    b.Property<string>("CreateDateTime")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("IsRefregerator")
                         .HasColumnType("tinyint");
@@ -340,16 +356,21 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("ProductId");
 
                     b.HasIndex("CountryId");
 
                     b.HasIndex("SupplierId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Products_tbl");
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Roles", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Roles", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -376,13 +397,40 @@ namespace WareHousingWebApi.Data.Migrations
                     b.ToTable("Roles_tbl", (string)null);
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Supplier", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Setting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreateDateTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MySetting")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Setting");
+                });
+
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Supplier", b =>
                 {
                     b.Property<int>("SupplierId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SupplierId"));
+
+                    b.Property<string>("CreateDateTime")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SupplierDescription")
                         .HasColumnType("nvarchar(max)");
@@ -397,12 +445,17 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Property<string>("SupplierTel")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("SupplierId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Suppliers_tbl");
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Users", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Users", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -493,7 +546,7 @@ namespace WareHousingWebApi.Data.Migrations
                     b.ToTable("Users_tbl", (string)null);
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.WareHouse", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.WareHouse", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -504,8 +557,8 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("CreateDateTime")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -525,7 +578,7 @@ namespace WareHousingWebApi.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("WareHousingWebApi.Data.Entities.Roles", null)
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Roles", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -534,7 +587,7 @@ namespace WareHousingWebApi.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("WareHousingWebApi.Data.Entities.Users", null)
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -543,7 +596,7 @@ namespace WareHousingWebApi.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("WareHousingWebApi.Data.Entities.Users", null)
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -552,13 +605,13 @@ namespace WareHousingWebApi.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("WareHousingWebApi.Data.Entities.Roles", null)
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Roles", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WareHousingWebApi.Data.Entities.Users", null)
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -567,32 +620,50 @@ namespace WareHousingWebApi.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("WareHousingWebApi.Data.Entities.Users", null)
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Inventory", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Country", b =>
                 {
-                    b.HasOne("WareHousingWebApi.Data.Entities.FiscalYear", "FiscalYear")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.FiscalYear", b =>
+                {
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Inventory", b =>
+                {
+                    b.HasOne("WareHousingWebApi.Entities.Entities.FiscalYear", "FiscalYear")
                         .WithMany()
                         .HasForeignKey("FiscalYearId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WareHousingWebApi.Data.Entities.Products", "Product")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Products", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WareHousingWebApi.Data.Entities.Users", "Users")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.HasOne("WareHousingWebApi.Data.Entities.WareHouse", "WareHouse")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.WareHouse", "WareHouse")
                         .WithMany()
                         .HasForeignKey("WareHouseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -607,13 +678,13 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Navigation("WareHouse");
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.ProductLocation", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.ProductLocation", b =>
                 {
-                    b.HasOne("WareHousingWebApi.Data.Entities.Users", "Users")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.HasOne("WareHousingWebApi.Data.Entities.WareHouse", "WareHouse")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.WareHouse", "WareHouse")
                         .WithMany()
                         .HasForeignKey("WareHouseId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -624,21 +695,21 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Navigation("WareHouse");
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.ProductPrice", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.ProductPrice", b =>
                 {
-                    b.HasOne("WareHousingWebApi.Data.Entities.FiscalYear", "FiscalYear")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.FiscalYear", "FiscalYear")
                         .WithMany()
                         .HasForeignKey("FiscalYearId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WareHousingWebApi.Data.Entities.Products", "Product")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Products", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WareHousingWebApi.Data.Entities.Users", "Users")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users")
                         .WithMany()
                         .HasForeignKey("UserId");
 
@@ -649,28 +720,52 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.Products", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Products", b =>
                 {
-                    b.HasOne("WareHousingWebApi.Data.Entities.Country", "Country")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WareHousingWebApi.Data.Entities.Supplier", "Supplier")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Country");
 
                     b.Navigation("Supplier");
+
+                    b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("WareHousingWebApi.Data.Entities.WareHouse", b =>
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Setting", b =>
                 {
-                    b.HasOne("WareHousingWebApi.Data.Entities.Users", "Users")
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Supplier", b =>
+                {
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.WareHouse", b =>
+                {
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users")
                         .WithMany()
                         .HasForeignKey("UserId");
 

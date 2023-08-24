@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WareHousingWebApi.Entities.Base;
 
 namespace WareHousingWebApi.Entities.Entities;
 
-public class Products
+public class Products : BaseEntity
 {
     [Key]
     public int ProductId { get; set; }
@@ -25,6 +26,10 @@ public class Products
     /// </summary>
     public byte IsRefregerator { get; set; }
 
+   
+
+  
+
     #region Rel
 
     [ForeignKey("CountryId")]
@@ -33,6 +38,8 @@ public class Products
     [ForeignKey("SupplierId")]
     public Supplier Supplier{ get; set; }
 
+    
+    
     #endregion
 
 }

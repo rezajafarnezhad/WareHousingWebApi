@@ -5,22 +5,20 @@ using WareHousingWebApi.Entities.Models;
 
 namespace WareHousingWebApi.Data.Services.Repository;
 
-public class ProductPriceRepo : IProductPriceRepo
+public class ProductPriceRepo :UnitOfWork , IProductPriceRepo
 {
-    private readonly ApplicationDbContext _context;
-
-    public ProductPriceRepo(ApplicationDbContext context)
+    public ProductPriceRepo(ApplicationDbContext context) : base(context)
     {
-        _context = context;
+       
     }
 
-    public async Task<List<ProductsPrice>> GetProductsPrice(int fiscalYearId)
+    public async Task<IEnumerable<ProductsPrice>> GetProductsPrice(int fiscalYearId)
     {
 
-        var _productsPrice = _context.ProductPrices_tbl.Where(c => c.FiscalYearId == fiscalYearId).AsEnumerable();
+        var _productsPrice = this.productPriceUW.GetEn.Where(c => c.FiscalYearId == fiscalYearId).AsEnumerable();
 
 
-        var data =await _context.Products_tbl.Select(c => new ProductsPrice()
+        var data =await this.productsUw.GetEn.Select(c => new ProductsPrice()
         {
 
             ProductId = c.ProductId,

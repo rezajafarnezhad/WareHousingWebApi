@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using WareHousingWebApi.Common.PublicTools;
 using WareHousingWebApi.Data.Services.Interface;
+using WareHousingWebApi.Data.Services.Repository;
 using WareHousingWebApi.Entities.Entities;
 using WareHousingWebApi.Entities.Models;
+using WareHousingWebApi.WebFramework.ApiResult;
 
 namespace WareHousing.WebApi.Controller
 {
@@ -18,20 +21,41 @@ namespace WareHousing.WebApi.Controller
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Supplier>> Get()
+        public async Task<ApiResponse> Get()
         {
-            return await _context.SupplierUw.Get();
+            var _data =  await _context.SupplierUw.Get();
+            return new ApiResponse<IEnumerable<Supplier>>()
+            {
+                flag = true,
+                Data = _data,
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName(),
+
+            };
         }
 
         [HttpPost]
-        public async Task<IActionResult> Craate(SupplierModel model)
+        public async Task<ApiResponse> Craate(SupplierModel model)
         {
-            if (!ModelState.IsValid) return BadRequest(model);
+            if (!ModelState.IsValid)
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.BadRequest,
+                    Message = ApiStatusCode.BadRequest.GetEnumDisplayName(),
+
+                };
 
             //کنترل تکراری نبودن
             var supplier = await _context.SupplierUw.Get(c => c.SupplierName == model.SupplierName || c.SupplierTel == model.SupplierTel);
             if (supplier.Count() > 0)
-                return StatusCode(550);
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.DuplicateInformation,
+                    Message = ApiStatusCode.DuplicateInformation.GetEnumDisplayName(),
+
+                };
 
             try
             {
@@ -44,41 +68,86 @@ namespace WareHousing.WebApi.Controller
                 };
                 await _context.SupplierUw.Create(_supplier);
                 await _context.SaveAsync();
-                return Ok(_supplier);
+                return new ApiResponse<Supplier>()
+                {
+                    flag = true,
+                    Data = _supplier,
+                    StatusCode = ApiStatusCode.Success,
+                    Message = ApiStatusCode.Success.GetEnumDisplayName(),
+
+                };
             }
             catch (Exception)
             {
-                return StatusCode(500);
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.ServerError,
+                    Message = ApiStatusCode.ServerError.GetEnumDisplayName(),
+
+                };
             }
 
 
         }
 
         [HttpGet("{Id}")]
-        public async Task<IActionResult> GetbyId(int Id)
+        public async Task<ApiResponse> GetbyId(int Id)
         {
             var _supplier = await _context.SupplierUw.GetById(Id);
-            return _supplier == null ? NotFound() : Ok(_supplier);
+
+            return _supplier != null
+                ? new ApiResponse<Supplier>
+                {
+                    flag = true,
+                    Data = _supplier,
+                    StatusCode = ApiStatusCode.Success,
+                    Message = ApiStatusCode.Success.GetEnumDisplayName()
+                }
+                : new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.NotFound,
+                    Message = ApiStatusCode.NotFound.GetEnumDisplayName()
+                };
 
         }
 
         [HttpPut]
-        public async Task<IActionResult> Edit(SupplierEditModel model)
+        public async Task<ApiResponse> Edit(SupplierEditModel model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(model);
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.BadRequest,
+                    Message = ApiStatusCode.BadRequest.GetEnumDisplayName(),
+
+                };
 
             //کنترل تکراری نبودن
             var supplier = await _context.SupplierUw.Get(c => c.SupplierName == model.SupplierName  && c.SupplierId != model.SupplierId);
           
 
             if (supplier.Count() > 0)
-                return StatusCode(550,"ss");
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.DuplicateInformation,
+                    Message = ApiStatusCode.DuplicateInformation.GetEnumDisplayName(),
+
+                };
 
             try
             {
                 var _supplier = await _context.SupplierUw.GetById(model.SupplierId);
-                if (_supplier == null) return NotFound();
+                if (_supplier == null) return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.NotFound,
+                    Message = ApiStatusCode.NotFound.GetEnumDisplayName(),
+
+                };
 
                 _supplier.SupplierName = model.SupplierName.Trim();
                 _supplier.SupplierTel = model.SupplierTel.Trim();
@@ -87,11 +156,24 @@ namespace WareHousing.WebApi.Controller
                 
                 _context.SupplierUw.Update(_supplier);
                 await _context.SaveAsync();
-                return Ok(_supplier);
+                return new ApiResponse<Supplier>()
+                {
+                    flag = true,
+                    Data = _supplier,
+                    StatusCode = ApiStatusCode.Success,
+                    Message = ApiStatusCode.Success.GetEnumDisplayName(),
+
+                };
             }
             catch (Exception)
             {
-                return StatusCode(500);
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.ServerError,
+                    Message = ApiStatusCode.ServerError.GetEnumDisplayName(),
+
+                };
 
             }
 
@@ -99,12 +181,18 @@ namespace WareHousing.WebApi.Controller
         }
 
         [HttpGet("GetSupplierForDropDown")]
-        public async Task<IActionResult> GetSupplierForDropDown() 
+        public async Task<ApiResponse> GetSupplierForDropDown() 
         {
 
             var data = await _context.SupplierUw.GetEn.ToDictionaryAsync(c => c.SupplierId , c=>c.SupplierName);
-            return Ok(JsonConvert.SerializeObject(data));
+            return new ApiResponse<Dictionary<int,string>>()
+            {
+                flag = true,
+                Data = data,
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName(),
 
+            };
         }
 
     }

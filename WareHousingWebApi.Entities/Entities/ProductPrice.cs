@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WareHousingWebApi.Entities.Base;
 
 namespace WareHousingWebApi.Entities.Entities;
 
-public class ProductPrice
+public class ProductPrice : BaseEntity
 {
     [Key]
     public int Id { get; set; }
@@ -21,7 +22,6 @@ public class ProductPrice
 
 
     public int ProductId { get; set; }
-    public string UserId { get; set; }
     public int FiscalYearId { get; set; }
 
 
@@ -29,8 +29,6 @@ public class ProductPrice
     //تاریخ اعمال قیمت
     public DateTime ActionDate { get; set; }
 
-    [ForeignKey(nameof(UserId))]
-    public Users Users { get; set; }
     [ForeignKey(nameof(FiscalYearId))]
     public FiscalYear FiscalYear { get; set; }
 

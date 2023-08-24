@@ -10,13 +10,19 @@ namespace WareHousing.WebApi.AutoMapperProfile
     {
         public Mapping()
         {
-            this.CreateMap<EditUser,Users>().ReverseMap();
-            this.CreateMap<CrateUser, Users>().ReverseMap();
-            this.CreateMap<ProductEditModel, Products>().ReverseMap();
-            this.CreateMap<ProductCreatModel, Products>().ReverseMap();
-
 
             var date = DateTime.Now.ToString();
+            this.CreateMap<EditUser,Users>().ReverseMap();
+            this.CreateMap<CrateUser, Users>().ReverseMap();
+
+            this.CreateMap<ProductEditModel, Products>().ReverseMap();
+
+            
+            this.CreateMap<ProductCreatModel, Products>()
+                .ForMember(c=>c.CreateDateTime , 
+                    op=> op.MapFrom(x=>DateTime.Now.ToString())).ReverseMap();
+               
+
             this.CreateMap<CreateFiscalYear, FiscalYear>()
 
                 .ForMember(c=>c.StartDate ,

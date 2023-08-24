@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using WareHousingWebApi.Entities.Base;
 
 namespace WareHousingWebApi.Entities.Entities;
 
-public class FiscalYear
+public class FiscalYear : BaseEntity
 {
     [Key]
     public int Id { get; set; }
@@ -12,8 +14,4 @@ public class FiscalYear
     //true => open
     //false => close
     public bool FiscalFlag { get; set; } = false;
-
-    public string UserId { get; set; }
-    public string CreateDateTime { get; set; } 
-
 }

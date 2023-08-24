@@ -4,5 +4,5 @@ namespace WareHousingWebApi.Data.Services.Interface;
 
 public interface IProductPriceRepo
 {
-    Task<List<ProductsPrice>> GetProductsPrice(int fiscalYearId);
+    Task<IEnumerable<ProductsPrice>> GetProductsPrice(int fiscalYearId);
 }

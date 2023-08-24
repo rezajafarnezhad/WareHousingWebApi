@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using WareHousingWebApi.Entities.Base;
 
 namespace WareHousingWebApi.Entities.Entities;
 
-public class Country
+public class Country : BaseEntity
 {
     [Key]
     public int CountryId { get; set; }

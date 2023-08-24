@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-
+using WareHousingWebApi.Common.PublicTools;
 using WareHousingWebApi.Data.Services.Interface;
 using WareHousingWebApi.Entities.Entities;
 using WareHousingWebApi.Entities.Models;
+using WareHousingWebApi.WebFramework.ApiResult;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WareHousing.WebApi.Controller;
 
@@ -23,16 +25,30 @@ public class InventoryApiController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Inventory>> Get()
+    public async Task<ApiResponse<IEnumerable<Inventory>>> Get()
     {
-        return await _context.inventory.Get();
+        var data = await _context.inventoryUw.Get();
+        return new ApiResponse<IEnumerable<Inventory>>()
+        {
+            flag = true,
+            Data = data,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName(),
+        };
+
     }
 
     [HttpGet("GetProductStock")]
-    public async Task<IEnumerable<InventoryStockModel>> GetProductStock([FromBody]InventoryQueryMaker model)
+    public async Task<ApiResponse<IEnumerable<InventoryStockModel>>> GetProductStock([FromBody]InventoryQueryMaker model)
     {
         var _data = await _inventoryRepo.GetProductStock(model);
-        return _data;
+        return new ApiResponse<IEnumerable<InventoryStockModel>>()
+        {
+            flag = true,
+            Data = _data,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName(),
+        };
     }
 
 }

@@ -7,6 +7,7 @@ using WareHousingWebApi.Common.PublicTools;
 using WareHousingWebApi.Data.Services.Interface;
 using WareHousingWebApi.Entities.Entities;
 using WareHousingWebApi.Entities.Models;
+using WareHousingWebApi.WebFramework.ApiResult;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WareHousing.WebApi.Controller;
@@ -26,48 +27,93 @@ public class FiscalYearApiController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<FiscalYear>> Get()
+    public async Task<ApiResponse<IEnumerable<FiscalYear>>> Get()
     {
-        return await _context.fiscalYear.Get();
+        var data = await _context.fiscalYearUw.Get();
+        return new ApiResponse<IEnumerable<FiscalYear>>()
+        {
+            flag = true,
+            Data = data,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.ServerError.GetEnumDisplayName()
+        };
     }
 
     [HttpGet("{Id}")]
-    public async Task<IActionResult> GetById([FromRoute] int Id)
+    public async Task<ApiResponse> GetById([FromRoute] int Id)
     {
-        var fiscalYear = await _context.fiscalYear.GetById(Id);
+        var fiscalYear = await _context.fiscalYearUw.GetById(Id);
         if (fiscalYear is null)
-            return NotFound();
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.NotFound,
+                Message = ApiStatusCode.NotFound.GetEnumDisplayName()
+            };
 
-        return Ok(fiscalYear);
+        return new ApiResponse<FiscalYear>()
+        {
+            flag = true,
+            Data = fiscalYear,
+            StatusCode = ApiStatusCode.NotFound,
+            Message = ApiStatusCode.NotFound.GetEnumDisplayName()
+        };
     }
-
+  
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] CreateFiscalYear model)
+    public async Task<ApiResponse> Create([FromForm] CreateFiscalYear model)
     {
-        if (!ModelState.IsValid) return BadRequest(model);
+        if (!ModelState.IsValid) 
+            return new ApiResponse()
+        {
+            flag = false,
+            StatusCode = ApiStatusCode.BadRequest,
+            Message = ApiStatusCode.BadRequest.GetEnumDisplayName()
+        };
 
         //کنترل تکراری نبودن
-        var fiscalYear = await _context.fiscalYear.Get();
+        var fiscalYear = await _context.fiscalYearUw.Get();
         if (fiscalYear.Any(c => c.FiscalYearDescription == model.FiscalYearDescription))
-            return StatusCode(550);
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.DuplicateInformation,
+                Message = ApiStatusCode.DuplicateInformation.GetEnumDisplayName()
+            };
 
         if (!await _fiscalYearRepo.CheckDatesForFiscalYear(model.StartDate.ConvertShamsiToMiladi(),
                 model.EndDate.ConvertShamsiToMiladi()))
         {
-            return StatusCode(610);
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.DateTimeError,
+                Message = ApiStatusCode.DateTimeError.GetEnumDisplayName()
+            };
         }
 
         try
         {
             model.CreateDateTime = DateTime.Now.ToString();
             var _fiscalYear = _mapper.Map(model, new FiscalYear());
-            await _context.fiscalYear.Create(_fiscalYear);
+            await _context.fiscalYearUw.Create(_fiscalYear);
             await _context.SaveAsync();
-            return Ok(_fiscalYear);
+            return new ApiResponse<FiscalYear>()
+            {
+                flag = true,
+                Data = _fiscalYear,
+                StatusCode = ApiStatusCode.DateTimeError,
+                Message = ApiStatusCode.DateTimeError.GetEnumDisplayName()
+            };
         }
         catch (Exception e)
         {
-            return StatusCode(500);
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.ServerError,
+                Message = ApiStatusCode.ServerError.GetEnumDisplayName()
+            };
         }
 
     }
@@ -76,26 +122,48 @@ public class FiscalYearApiController : ControllerBase
 
 
     [HttpPut]
-    public async Task<IActionResult> Update([FromForm] EditFiscalYear model)
+    public async Task<ApiResponse> Update([FromForm] EditFiscalYear model)
     {
-        if (!ModelState.IsValid) return BadRequest(model);
+        if (!ModelState.IsValid) 
+            return new ApiResponse()
+        {
+            flag = false,
+            StatusCode = ApiStatusCode.BadRequest,
+            Message = ApiStatusCode.BadRequest.GetEnumDisplayName()
+        };
 
-        var _fiscalYear = await _context.fiscalYear.GetById(model.Id);
+        var _fiscalYear = await _context.fiscalYearUw.GetById(model.Id);
         if (_fiscalYear == null)
-            return BadRequest(model);
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.NotFound,
+                Message = ApiStatusCode.NotFound.GetEnumDisplayName()
+            };
+
 
 
         //کنترل تکراری نبودن
-        var fiscalYear = await _context.fiscalYear.Get();
+        var fiscalYear = await _context.fiscalYearUw.Get();
         if (fiscalYear.Any(c => c.FiscalYearDescription == model.FiscalYearDescription && c.Id != model.Id))
-            return StatusCode(550);
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.DuplicateInformation,
+                Message = ApiStatusCode.DuplicateInformation.GetEnumDisplayName()
+            };
 
 
         if (!await _fiscalYearRepo.IsExistDates(model.StartDate, model.EndDate))
         {
             if (!await _fiscalYearRepo.CheckDatesForFiscalYear(model.StartDate.ConvertShamsiToMiladi(), model.EndDate.ConvertShamsiToMiladi()))
             {
-                return StatusCode(610);
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.DateTimeError,
+                    Message = ApiStatusCode.DateTimeError.GetEnumDisplayName()
+                };
             }
 
         }
@@ -103,21 +171,39 @@ public class FiscalYearApiController : ControllerBase
         try
         {
             var _fiscalYearToUpDate = _mapper.Map(model, _fiscalYear);
-            _context.fiscalYear.Update(_fiscalYearToUpDate);
+            _context.fiscalYearUw.Update(_fiscalYearToUpDate);
             await _context.SaveAsync();
-            return Ok(_fiscalYearToUpDate);
+            return new ApiResponse<FiscalYear>()
+            {
+                flag = true,
+                Data = _fiscalYearToUpDate,
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName()
+            };
         }
         catch (Exception e)
         {
-            return StatusCode(500);
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.ServerError,
+                Message = ApiStatusCode.ServerError.GetEnumDisplayName()
+            };
         }
     }
 
 
     [HttpGet("GetFiscalYearForDropDown")]
-    public async Task<IActionResult> FiscalYearForDropDown()
+    public async Task<ApiResponse> FiscalYearForDropDown()
     {
-        var _fisclaYear = await _context.fiscalYear.GetEn.ToDictionaryAsync(c => c.Id, c => c.FiscalYearDescription);
-        return Ok(JsonConvert.SerializeObject(_fisclaYear));
+        var _fisclaYear = await _context.fiscalYearUw.GetEn.ToDictionaryAsync(c => c.Id, c => c.FiscalYearDescription);
+
+        return new ApiResponse<Dictionary<int,string>>()
+        {
+            flag = true,
+            Data = _fisclaYear,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName()
+        };
     }
 }
