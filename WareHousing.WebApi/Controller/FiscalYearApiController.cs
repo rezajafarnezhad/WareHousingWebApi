@@ -102,8 +102,8 @@ public class FiscalYearApiController : ControllerBase
             {
                 flag = true,
                 Data = _fiscalYear,
-                StatusCode = ApiStatusCode.DateTimeError,
-                Message = ApiStatusCode.DateTimeError.GetEnumDisplayName()
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName()
             };
         }
         catch (Exception e)

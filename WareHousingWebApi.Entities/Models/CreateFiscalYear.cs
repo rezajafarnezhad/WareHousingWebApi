@@ -10,7 +10,6 @@ public class CreateFiscalYear
 
     public string EndDate { get; set; }
     [Required()]
-
     public string FiscalYearDescription { get; set; }
     
     public bool FiscalFlag { get; set; }

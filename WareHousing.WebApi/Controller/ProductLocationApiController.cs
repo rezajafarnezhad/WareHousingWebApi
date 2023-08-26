@@ -57,8 +57,8 @@ public class ProductLocationApiController : ControllerBase
             {
                 flag = true,
                 Data = _createLocation,
-                StatusCode = ApiStatusCode.BadRequest,
-                Message = ApiStatusCode.BadRequest.GetEnumDisplayName(),
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName(),
             };
         }
         catch (Exception)

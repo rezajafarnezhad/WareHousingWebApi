@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WareHousingWebApi.Common.PublicTools;
+using WareHousingWebApi.WebFramework.ApiResult;
 
 namespace WareHousing.WebApi.PublicApi
 {
@@ -15,7 +17,7 @@ namespace WareHousing.WebApi.PublicApi
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadFile(IEnumerable<IFormFile> imagearray)
+        public async Task<ApiResponse> UploadFile(IEnumerable<IFormFile> imagearray)
         {
             try
             {
@@ -31,17 +33,27 @@ namespace WareHousing.WebApi.PublicApi
                     }
                 }
 
-                return Ok("https://" + HttpContext.Request.Headers.Host + "//upload//productimage/" + filename);
+                return new ApiResponse()
+                {
+                    flag = true,
+                    StatusCode = ApiStatusCode.Success,
+                    Message = "https://" + HttpContext.Request.Headers.Host + "//upload//productimage/" + filename,
+                };
             }
             catch (Exception)
             {
 
-                return StatusCode(500);
-                     
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.ServerError,
+                    Message = ApiStatusCode.ServerError.GetEnumDisplayName(),
+                };
+
             }
         }
         [HttpPost("UserUpload")]
-        public async Task<IActionResult> UserUploadFile(IEnumerable<IFormFile> imagearray)
+        public async Task<ApiResponse> UserUploadFile(IEnumerable<IFormFile> imagearray)
         {
             try
             {
@@ -57,12 +69,23 @@ namespace WareHousing.WebApi.PublicApi
                     }
                 }
 
-                return Ok("https://" + HttpContext.Request.Headers.Host + "//upload//userimage/" + filename);
+                return new ApiResponse()
+                {
+                    flag = true,
+                    StatusCode = ApiStatusCode.Success,
+                    Message = "https://" + HttpContext.Request.Headers.Host + "//upload//userimage/" + filename
+                };
             }
             catch (Exception)
             {
 
-                return StatusCode(500);
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.ServerError,
+                    Message = ApiStatusCode.ServerError.GetEnumDisplayName(),
+                };
+
 
             }
         }

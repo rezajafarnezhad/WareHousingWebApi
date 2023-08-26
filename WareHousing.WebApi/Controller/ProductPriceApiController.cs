@@ -30,13 +30,13 @@ public class ProductPriceApiController : ControllerBase
     [HttpGet("GetList/{fiscalYearId}")]
     public async Task<ApiResponse> Get([FromRoute] int fiscalYearId)
     {
-        var _data =  await _productPriceRepo.GetProductsPrice(fiscalYearId);
+        var _data = await _productPriceRepo.GetProductsPrice(fiscalYearId);
 
         return _data != null
             ? new ApiResponse<IEnumerable<ProductsPrice>>()
             {
                 flag = true,
-                Data  = _data,
+                Data = _data,
                 StatusCode = ApiStatusCode.Success,
                 Message = ApiStatusCode.Success.GetEnumDisplayName()
             }
@@ -50,12 +50,12 @@ public class ProductPriceApiController : ControllerBase
 
 
     [HttpGet("{Id}")]
-    public async Task<IActionResult> GetById([FromRoute] int Id)
+    public async Task<ApiResponse> GetById([FromRoute] int Id)
     {
         var _data = await _context.productPriceUW.GetById(Id);
 
         return _data != null
-            ? new ApiResponse<ProductsPrice>()
+            ? new ApiResponse<ProductPrice>()
             {
                 flag = true,
                 Data = _data,
@@ -112,17 +112,30 @@ public class ProductPriceApiController : ControllerBase
     [HttpGet("GetProductPriceHistory/{productId}/{fiscalYearId}")]
     public async Task<ApiResponse> GetProductPriceHistory([FromRoute] int productId, int fiscalYearId)
     {
-        var data = await _context.productPriceUW
+        var _data =await  _context.productPriceUW
             .Get(c => c.ProductId == productId && c.FiscalYearId == fiscalYearId);
 
-        return new ApiResponse<IEnumerable<ProductsPrice>>()
+        if (_data is null)
         {
-            flag = true,
-            Data = data,
-            StatusCode = ApiStatusCode.Success,
-            Message = ApiStatusCode.Success.GetEnumDisplayName(),
-        };
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.NotFound,
+                Message = ApiStatusCode.NotFound.GetEnumDisplayName(),
+            };
+        }
+        else
+        {
+            return new ApiResponse<IEnumerable<WareHousingWebApi.Entities.Entities.ProductPrice>>()
+            {
+                flag = true,
+                Data = _data,
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName(),
+            };
+        }
     }
+   
 
     [HttpDelete("{Id}")]
     public async Task<ApiResponse> DeletePrice([FromRoute] int Id)
