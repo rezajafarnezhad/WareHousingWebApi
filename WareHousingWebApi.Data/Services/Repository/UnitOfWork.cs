@@ -148,6 +148,22 @@ namespace WareHousingWebApi.Data.Services.Repository
             return new EntityTransaction(_context);
         }
 
+        /// <summary>
+        /// دریافت موجوذی هر سری ساخت
+        /// </summary>
+        /// <param name="inventoryId"></param>
+        /// <returns></returns>
+        public async Task<int> GetPhysicalStockForBranch(int inventoryId)
+        {
+            var _physicalStock = this.inventoryUw.GetEnNoTraking
+                .Where(c => c.Id == inventoryId || c.ReferenceId == inventoryId)
+                .Sum(x => x.OperationType == 1 ? x.ProductCountMain :
+                    x.OperationType == 2 ? -x.ProductCountMain :
+                    x.OperationType == 6 ? x.ProductCountMain :
+                    x.OperationType == 5 ? -x.ProductCountMain : 0);
+       
+            return _physicalStock;
+        }
     }
 
 }

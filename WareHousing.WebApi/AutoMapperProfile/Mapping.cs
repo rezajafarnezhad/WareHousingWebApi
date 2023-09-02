@@ -48,8 +48,34 @@ namespace WareHousing.WebApi.AutoMapperProfile
 
             this.CreateMap<CreateProductLocation,ProductLocation>().ReverseMap();
             this.CreateMap<EditProductLocation, ProductLocation>().ReverseMap();
+            
+            this.CreateMap<Inventory,AddProductStock>().ReverseMap()
+                .ForMember(c=>c.ExpireData,
+                    op=>op.MapFrom(x=>x.ExpireData.ConvertShamsiToMiladi()))
+                
+                .ForMember(c => c.OperationDate,
+                    op => op.MapFrom(x => x.OperationDate.ConvertShamsiToMiladi()))
+                ;
+          
+            
+            this.CreateMap<Inventory,ExitStockModel>().ReverseMap()
+                .ForMember(c => c.OperationDate,
+                    op => op.MapFrom(x => x.OperationDate.ConvertShamsiToMiladi()))
+                .ForMember(c => c.ExpireData,
+                    op => op.MapFrom(x => DateTime.Now))
+                ;
 
-
+            this.CreateMap<Inventory, WastageStockModel>().ReverseMap()
+                .ForMember(c => c.OperationDate,
+                    op => op.MapFrom(x => x.OperationDate.ConvertShamsiToMiladi()))
+   
+                ;
+            
+            this.CreateMap<Inventory, BackWastageStockModel>().ReverseMap()
+                .ForMember(c => c.OperationDate,
+                    op => op.MapFrom(x => x.OperationDate.ConvertShamsiToMiladi()))
+   
+                ;
 
         }
 

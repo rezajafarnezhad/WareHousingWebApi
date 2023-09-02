@@ -24,3 +24,10 @@ namespace WareHousingWebApi.Entities.Models
         public IList<string>? Roles { get; set; }
     }
 }
+
+
+public class DropDownDto
+{
+    public int DrId { get; set; }
+    public string DrName { get; set; }
+}

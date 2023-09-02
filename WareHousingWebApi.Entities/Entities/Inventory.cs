@@ -11,7 +11,7 @@ public class Inventory : BaseEntity
     public int ProductId { get; set; }
     public int WareHouseId { get; set; }
     public int FiscalYearId { get; set; }
-
+    public int ProductLocationId { get; set; }
     //تعداد تراکنش در انبار اصلی
     public int ProductCountMain { get; set; }
 
@@ -33,7 +33,7 @@ public class Inventory : BaseEntity
     public DateTime ExpireData { get; set; }
     public string Description { get; set; }
 
-
+    public int ReferenceId { get; set; }
     //rel
 
     [ForeignKey(nameof(WareHouseId))]
@@ -45,4 +45,6 @@ public class Inventory : BaseEntity
     [ForeignKey(nameof(FiscalYearId))]
     public FiscalYear FiscalYear { get; set; }
 
+    [ForeignKey(nameof(ProductLocationId))]
+    public ProductLocation ProductLocation { get; set; }
 }

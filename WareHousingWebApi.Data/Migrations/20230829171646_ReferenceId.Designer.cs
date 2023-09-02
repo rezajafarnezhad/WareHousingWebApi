@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WareHousingWebApi.Data.DbContext;
 
@@ -11,9 +12,11 @@ using WareHousingWebApi.Data.DbContext;
 namespace WareHousingWebApi.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230829171646_ReferenceId")]
+    partial class ReferenceId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,9 +220,6 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductLocationId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProductWastage")
                         .HasColumnType("int");
 
@@ -237,8 +237,6 @@ namespace WareHousingWebApi.Data.Migrations
                     b.HasIndex("FiscalYearId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductLocationId");
 
                     b.HasIndex("UserId");
 
@@ -664,12 +662,6 @@ namespace WareHousingWebApi.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WareHousingWebApi.Entities.Entities.ProductLocation", "ProductLocation")
-                        .WithMany()
-                        .HasForeignKey("ProductLocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -683,8 +675,6 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Navigation("FiscalYear");
 
                     b.Navigation("Product");
-
-                    b.Navigation("ProductLocation");
 
                     b.Navigation("Users");
 

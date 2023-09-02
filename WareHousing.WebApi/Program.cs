@@ -42,7 +42,11 @@ builder.Services.AddCors(options =>
 
 });
 
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(op =>
+{
+    op.SuppressModelStateInvalidFilter=true;
 
+});
 var app = builder.Build();
 
 

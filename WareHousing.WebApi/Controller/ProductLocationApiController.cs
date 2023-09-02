@@ -140,7 +140,7 @@ public class ProductLocationApiController : ControllerBase
                     Data = eLocation,
                     StatusCode = ApiStatusCode.Success,
                     Message = ApiStatusCode.Success.GetEnumDisplayName(),
-                }; ;
+                };
             }
         }
         catch (Exception)
@@ -168,6 +168,21 @@ public class ProductLocationApiController : ControllerBase
     {
         var data = await _unitOfWork.productLocationUW.Get(c => c.WareHouseId == Id);
         return new ApiResponse<IEnumerable<ProductLocation>>()
+        {
+            flag = true,
+            Data = data,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName(),
+        };
+    }
+
+    [HttpGet("GetProductLocationDropDown/{warehouseId}")]
+    public async Task<ApiResponse> GetProductLocationDropDown([FromRoute] int warehouseId)
+    {
+        var data = await _unitOfWork.productLocationUW.GetEnNoTraking
+            .Where(c=>c.WareHouseId == warehouseId)
+            .ToDictionaryAsync(c => c.Id, c => c.ProductLocationAddress);
+        return new ApiResponse<Dictionary<int,string>>()
         {
             flag = true,
             Data = data,
