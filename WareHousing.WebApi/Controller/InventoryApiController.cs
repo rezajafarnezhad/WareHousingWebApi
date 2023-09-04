@@ -208,11 +208,13 @@ public class InventoryApiController : ControllerBase
         {
 
             var _ExitProductStock = _mapper.Map(model, new Inventory());
+
+            var getinfo = await _context.inventoryUw.GetEn.Where(c => c.Id == model.ReferenceId).SingleAsync();
             _ExitProductStock.CreateDateTime = DateTime.Now.ToString();
             _ExitProductStock.OperationType = 2; //خروج از انبار
             _ExitProductStock.ProductWastage = 0;
-            _ExitProductStock.ProductLocationId =await _context.inventoryUw.GetEn.Where(c => c.Id == model.ReferenceId)
-                .Select(c => c.ProductLocationId).SingleAsync();
+            _ExitProductStock.ProductLocationId = getinfo.ProductLocationId;
+            _ExitProductStock.ExpireData = getinfo.ExpireData;
             await _context.inventoryUw.Create(_ExitProductStock);
             await _context.SaveAsync();
             return new ApiResponse()

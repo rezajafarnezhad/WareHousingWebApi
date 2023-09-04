@@ -37,7 +37,7 @@ public class CreateProductPrice
 
 
 
-public class ProductsPrice
+public class ProductsPriceInput
 {
     public int ProductPriceId { get; set; }
     public int ProductId { get; set; }

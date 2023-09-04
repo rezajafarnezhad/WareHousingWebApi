@@ -2,6 +2,7 @@
 using WareHousingWebApi.Common.PublicTools;
 using WareHousingWebApi.Entities.Entities;
 using WareHousingWebApi.Entities.Models;
+using WareHousingWebApi.Entities.Models.Dto;
 
 
 namespace WareHousing.WebApi.AutoMapperProfile
@@ -36,7 +37,6 @@ namespace WareHousing.WebApi.AutoMapperProfile
                 .ReverseMap();
 
 
-            this.CreateMap<WareHouse,CreateWareHouse>().ReverseMap();
 
             this.CreateMap<ProductPrice,CreateProductPrice>().ReverseMap()
                 .ForMember(c => c.ActionDate,
@@ -61,8 +61,6 @@ namespace WareHousing.WebApi.AutoMapperProfile
             this.CreateMap<Inventory,ExitStockModel>().ReverseMap()
                 .ForMember(c => c.OperationDate,
                     op => op.MapFrom(x => x.OperationDate.ConvertShamsiToMiladi()))
-                .ForMember(c => c.ExpireData,
-                    op => op.MapFrom(x => DateTime.Now))
                 ;
 
             this.CreateMap<Inventory, WastageStockModel>().ReverseMap()
@@ -77,6 +75,9 @@ namespace WareHousing.WebApi.AutoMapperProfile
    
                 ;
 
+            this.CreateMap<Inventory, ProductFlowReplyDto>().ReverseMap()
+                
+                ;
         }
 
     }

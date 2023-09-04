@@ -12,13 +12,13 @@ public class ProductPriceRepo :UnitOfWork , IProductPriceRepo
        
     }
 
-    public async Task<IEnumerable<ProductsPrice>> GetProductsPrice(int fiscalYearId)
+    public async Task<IEnumerable<ProductsPriceInput>> GetProductsPrice(int fiscalYearId)
     {
 
         var _productsPrice = this.productPriceUW.GetEn.Where(c => c.FiscalYearId == fiscalYearId).AsEnumerable();
 
 
-        var data =await this.productsUw.GetEn.Select(c => new ProductsPrice()
+        var data =await this.productsUw.GetEn.Select(c => new ProductsPriceInput()
         {
 
             ProductId = c.ProductId,

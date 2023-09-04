@@ -8,7 +8,7 @@ using WareHousingWebApi.Data.Services.Repository;
 using WareHousingWebApi.Entities.Entities;
 using WareHousingWebApi.Entities.Models;
 using WareHousingWebApi.WebFramework.ApiResult;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace WareHousing.WebApi.Controller;
 
@@ -33,7 +33,7 @@ public class ProductPriceApiController : ControllerBase
         var _data = await _productPriceRepo.GetProductsPrice(fiscalYearId);
 
         return _data != null
-            ? new ApiResponse<IEnumerable<ProductsPrice>>()
+            ? new ApiResponse<IEnumerable<ProductsPriceInput>>()
             {
                 flag = true,
                 Data = _data,
@@ -165,8 +165,8 @@ public class ProductPriceApiController : ControllerBase
             return new ApiResponse()
             {
                 flag = true,
-                StatusCode = ApiStatusCode.ServerError,
-                Message = ApiStatusCode.ServerError.GetEnumDisplayName(),
+                StatusCode = ApiStatusCode.DateTimeError,
+                Message = ApiStatusCode.DateTimeError.GetEnumDisplayName(),
             };
 
         }
