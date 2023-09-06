@@ -23,6 +23,7 @@ namespace WareHousingWebApi.Data.Services.Repository
         private GenericClass<Inventory> _inventory;
         private GenericClass<ProductPrice> _productPrice;
         private GenericClass<ProductLocation> _productLocation;
+        private GenericClass<UserInWareHouse> _userInWareHouse;
 
         public GenericClass<Users> usersUw
         {
@@ -32,6 +33,16 @@ namespace WareHousingWebApi.Data.Services.Repository
                     _users = new GenericClass<Users>(_context);
 
                 return _users;
+            }
+        }
+        public GenericClass<UserInWareHouse> userInWareHouseUW
+        {
+            get
+            {
+                if (_userInWareHouse == null)
+                    _userInWareHouse = new GenericClass<UserInWareHouse>(_context);
+
+                return _userInWareHouse;
             }
         }
 

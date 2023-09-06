@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,8 @@ namespace WareHousing.WebApi.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
+
 public class ProductLocationApiController : ControllerBase
 {
 
@@ -37,7 +40,7 @@ public class ProductLocationApiController : ControllerBase
             };
 
         var _location =
-            await _unitOfWork.productLocationUW.Get();
+             _unitOfWork.productLocationUW.Get();
 
         if (_location.Any(c => c.ProductLocationAddress == model.ProductLocationAddress))
             return new ApiResponse()
@@ -119,7 +122,7 @@ public class ProductLocationApiController : ControllerBase
         {
             var _location = await _unitOfWork.productLocationUW.GetById(model.Id);
             //تکراری نبودن
-            var countries = await _unitOfWork.productLocationUW.Get(c => c.ProductLocationAddress == model.ProductLocationAddress && c.Id != model.Id);
+            var countries =  _unitOfWork.productLocationUW.Get(c => c.ProductLocationAddress == model.ProductLocationAddress && c.Id != model.Id);
             if (countries.Count() > 0)
                 return new ApiResponse()
                 {
@@ -166,7 +169,7 @@ public class ProductLocationApiController : ControllerBase
     [HttpGet("GetProductLocationByWareHouseId")]
     public async Task<ApiResponse> GetListProductLocationByWareHouseId([FromBody] int Id) // WareHouseId
     {
-        var data = await _unitOfWork.productLocationUW.Get(c => c.WareHouseId == Id);
+        var data = _unitOfWork.productLocationUW.Get(c => c.WareHouseId == Id);
         return new ApiResponse<IEnumerable<ProductLocation>>()
         {
             flag = true,

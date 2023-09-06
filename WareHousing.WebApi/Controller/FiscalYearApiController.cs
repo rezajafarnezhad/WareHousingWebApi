@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -14,6 +15,8 @@ namespace WareHousing.WebApi.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
+
 public class FiscalYearApiController : ControllerBase
 {
     private readonly IUnitOfWork _context;
@@ -29,7 +32,7 @@ public class FiscalYearApiController : ControllerBase
     [HttpGet]
     public async Task<ApiResponse<IEnumerable<FiscalYear>>> Get()
     {
-        var data = await _context.fiscalYearUw.Get();
+        var data =  _context.fiscalYearUw.Get();
         return new ApiResponse<IEnumerable<FiscalYear>>()
         {
             flag = true,
@@ -72,7 +75,7 @@ public class FiscalYearApiController : ControllerBase
         };
 
         //کنترل تکراری نبودن
-        var fiscalYear = await _context.fiscalYearUw.Get();
+        var fiscalYear =  _context.fiscalYearUw.Get();
         if (fiscalYear.Any(c => c.FiscalYearDescription == model.FiscalYearDescription))
             return new ApiResponse()
             {
@@ -144,7 +147,7 @@ public class FiscalYearApiController : ControllerBase
 
 
         //کنترل تکراری نبودن
-        var fiscalYear = await _context.fiscalYearUw.Get();
+        var fiscalYear = _context.fiscalYearUw.Get();
         if (fiscalYear.Any(c => c.FiscalYearDescription == model.FiscalYearDescription && c.Id != model.Id))
             return new ApiResponse()
             {
@@ -194,6 +197,7 @@ public class FiscalYearApiController : ControllerBase
 
 
     [HttpGet("GetFiscalYearForDropDown")]
+    [AllowAnonymous]
     public async Task<ApiResponse> FiscalYearForDropDown()
     {
         var _fisclaYear = await _context.fiscalYearUw.GetEn.ToDictionaryAsync(c => c.Id, c => c.FiscalYearDescription);

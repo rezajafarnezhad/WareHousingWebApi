@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WareHousingWebApi.Common.PublicTools;
@@ -12,6 +13,8 @@ namespace WareHousing.WebApi.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class SupplierApiController : ControllerBase
     {
         private readonly IUnitOfWork _context;
@@ -23,7 +26,7 @@ namespace WareHousing.WebApi.Controller
         [HttpGet]
         public async Task<ApiResponse> Get()
         {
-            var _data =  await _context.SupplierUw.Get();
+            var _data =  _context.SupplierUw.Get();
             return new ApiResponse<IEnumerable<Supplier>>()
             {
                 flag = true,
@@ -47,7 +50,7 @@ namespace WareHousing.WebApi.Controller
                 };
 
             //کنترل تکراری نبودن
-            var supplier = await _context.SupplierUw.Get(c => c.SupplierName == model.SupplierName || c.SupplierTel == model.SupplierTel);
+            var supplier = _context.SupplierUw.Get(c => c.SupplierName == model.SupplierName || c.SupplierTel == model.SupplierTel);
             if (supplier.Count() > 0)
                 return new ApiResponse()
                 {
@@ -126,7 +129,7 @@ namespace WareHousing.WebApi.Controller
                 };
 
             //کنترل تکراری نبودن
-            var supplier = await _context.SupplierUw.Get(c => c.SupplierName == model.SupplierName  && c.SupplierId != model.SupplierId);
+            var supplier =  _context.SupplierUw.Get(c => c.SupplierName == model.SupplierName  && c.SupplierId != model.SupplierId);
           
 
             if (supplier.Count() > 0)

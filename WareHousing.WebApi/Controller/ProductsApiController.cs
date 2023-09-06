@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WareHousingWebApi.Common.PublicTools;
@@ -11,6 +12,8 @@ namespace WareHousing.WebApi.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
+
 public class ProductsApiController : ControllerBase
 {
     private readonly IUnitOfWork _context;
@@ -24,7 +27,7 @@ public class ProductsApiController : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<Products>> Get()
     {
-        return await _context.productsUw.Get(null, "Country,Supplier");
+        return  _context.productsUw.Get(null, "Country,Supplier");
     }
 
     [HttpPost]
@@ -33,7 +36,7 @@ public class ProductsApiController : ControllerBase
         if (!ModelState.IsValid) return BadRequest(model);
 
         //کنترل تکراری نبودن
-        var product = await _context.productsUw.Get();
+        var product = _context.productsUw.Get();
         if (product.Any(c => c.ProductName == model.ProductName))
             return StatusCode(550);
 

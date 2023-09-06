@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -12,6 +13,8 @@ namespace WareHousing.WebApi.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
+
 public class WereHouseApiController : ControllerBase
 {
 
@@ -27,20 +30,20 @@ public class WereHouseApiController : ControllerBase
     [HttpGet]
     public async Task<ApiResponse<IEnumerable<WareHouse>>> GetAll()
     {
-      var data = await _unitOfWork.wareHouseUw.Get();
-      return new ApiResponse<IEnumerable<WareHouse>>()
-      {
-          flag = true,
-          Data = data,
-          StatusCode = ApiStatusCode.Success,
-          Message = ApiStatusCode.Success.GetEnumDisplayName(),
+        var data = _unitOfWork.wareHouseUw.Get();
+        return new ApiResponse<IEnumerable<WareHouse>>()
+        {
+            flag = true,
+            Data = data,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName(),
 
-      };
+        };
     }
 
     [HttpGet("{Id}")]
 
-    public async Task<ApiResponse> GetById([FromRoute]int Id)
+    public async Task<ApiResponse> GetById([FromRoute] int Id)
     {
         var WareHouse = await _unitOfWork.wareHouseUw.GetById(Id);
         return WareHouse != null
@@ -71,8 +74,8 @@ public class WereHouseApiController : ControllerBase
 
             };
 
-        var wareHouses = await _unitOfWork.wareHouseUw.Get();
-        if(wareHouses.Any(c=>c.Name == model.Name))
+        var wareHouses = _unitOfWork.wareHouseUw.Get();
+        if (wareHouses.Any(c => c.Name == model.Name))
             return new ApiResponse()
             {
                 flag = false,
@@ -84,7 +87,7 @@ public class WereHouseApiController : ControllerBase
         try
         {
             model.CreateDateTime = DateTime.Now.ToString();
-            var _wareHouseForAdd = _mapper.Map(model,new WareHouse());
+            var _wareHouseForAdd = _mapper.Map(model, new WareHouse());
             await _unitOfWork.wareHouseUw.Create(_wareHouseForAdd);
             await _unitOfWork.SaveAsync();
             return new ApiResponse<WareHouse>()
@@ -110,7 +113,7 @@ public class WereHouseApiController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<ApiResponse> Update([FromForm]EditWareHouse model)
+    public async Task<ApiResponse> Update([FromForm] EditWareHouse model)
     {
         if (!ModelState.IsValid)
             return new ApiResponse()
@@ -122,7 +125,7 @@ public class WereHouseApiController : ControllerBase
             };
 
         var _wareHouse = await _unitOfWork.wareHouseUw.GetById(model.Id);
-        if(_wareHouse is null) return new ApiResponse()
+        if (_wareHouse is null) return new ApiResponse()
         {
             flag = false,
             StatusCode = ApiStatusCode.NotFound,
@@ -130,8 +133,8 @@ public class WereHouseApiController : ControllerBase
 
         };
 
-        var _wareHouses = await _unitOfWork.wareHouseUw.Get();
-        if(_wareHouses.Any(c=>c.Name == model.Name && c.Id != model.Id))
+        var _wareHouses = _unitOfWork.wareHouseUw.Get();
+        if (_wareHouses.Any(c => c.Name == model.Name && c.Id != model.Id))
             return new ApiResponse()
             {
                 flag = false,
@@ -148,7 +151,7 @@ public class WereHouseApiController : ControllerBase
             return new ApiResponse<WareHouse>()
             {
                 flag = true,
-                Data=_wareHouseForEdit,
+                Data = _wareHouseForEdit,
                 StatusCode = ApiStatusCode.Success,
                 Message = ApiStatusCode.Success.GetEnumDisplayName(),
 
@@ -171,7 +174,35 @@ public class WereHouseApiController : ControllerBase
     {
 
         var data = await _unitOfWork.wareHouseUw.GetEn.ToDictionaryAsync(c => c.Id, c => c.Name);
-        return new ApiResponse<Dictionary<int,string>>()
+        return new ApiResponse<Dictionary<int, string>>()
+        {
+            flag = true,
+            Data = data,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName(),
+
+        };
+    }
+
+    [HttpGet("GetWareHouseUserOrientedForDropDown")]
+    public async Task<ApiResponse> GetWareHouseUserOrientedForDropDown([FromQuery] string userId)
+    {
+
+        //لیست انبار هایی که کاربر دسترسی دارد
+        //WareHouseId
+        var getWareHouseIdsUserWareHouse = await _unitOfWork.userInWareHouseUW
+            .GetEn
+            .Where(c => c.UserIdInWareHouse == userId)
+            .Select(c => c.WareHouseId)
+            .ToListAsync();
+
+        var data =
+            await _unitOfWork.wareHouseUw
+                .GetEn
+                .Where(c => getWareHouseIdsUserWareHouse.Contains(c.Id))
+                .ToDictionaryAsync(c => c.Id, c => c.Name);
+        
+        return new ApiResponse<Dictionary<int, string>>()
         {
             flag = true,
             Data = data,

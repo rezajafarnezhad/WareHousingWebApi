@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,8 @@ namespace WareHousing.WebApi.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
+
 public class InventoryApiController : ControllerBase
 {
     private readonly IUnitOfWork _context;
@@ -30,7 +33,7 @@ public class InventoryApiController : ControllerBase
     [HttpGet]
     public async Task<ApiResponse<IEnumerable<Inventory>>> Get()
     {
-        var data = await _context.inventoryUw.Get();
+        var data =  _context.inventoryUw.Get();
         return new ApiResponse<IEnumerable<Inventory>>()
         {
             flag = true,

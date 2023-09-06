@@ -14,7 +14,10 @@ namespace WareHousing.WebApi.AutoMapperProfile
 
             var date = DateTime.Now.ToString();
             this.CreateMap<EditUser,Users>().ReverseMap();
-            this.CreateMap<CrateUser, Users>().ReverseMap();
+           
+            this.CreateMap<CrateUser, Users>()
+
+                .ReverseMap();
 
             this.CreateMap<ProductEditModel, Products>().ReverseMap();
 

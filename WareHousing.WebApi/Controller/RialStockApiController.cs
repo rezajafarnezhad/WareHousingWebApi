@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.AccessControl;
 using WareHousingWebApi.Common.PublicTools;
@@ -10,6 +11,8 @@ namespace WareHousing.WebApi.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
+
 public class RialStockApiController : ControllerBase
 {
     private readonly IRialStockRepo _rialstockRepo;

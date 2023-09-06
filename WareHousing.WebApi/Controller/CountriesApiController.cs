@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -12,6 +13,7 @@ namespace WareHousing.WebApi.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class CountriesApiController : ControllerBase
 {
     private readonly IUnitOfWork _context;
@@ -23,7 +25,7 @@ public class CountriesApiController : ControllerBase
     [HttpGet]
     public async Task<ApiResponse<IEnumerable<Country>>> Get()
     {
-        var countryList = await _context.CountryUw.Get();
+        var countryList =  _context.CountryUw.Get();
 
         return new ApiResponse<IEnumerable<Country>>()
         {
@@ -46,7 +48,7 @@ public class CountriesApiController : ControllerBase
             };
 
         //کنترل تکراری نبودن
-        var country = await _context.CountryUw.Get(c => c.CountryName == countryName);
+        var country =  _context.CountryUw.Get(c => c.CountryName == countryName);
         if (country.Count() > 0)
             return new ApiResponse()
             {
@@ -119,7 +121,7 @@ public class CountriesApiController : ControllerBase
             };
 
         //تکراری نبودن
-        var countries = await _context.CountryUw.Get(c => c.CountryName == model.CountryName && c.CountryId != model.CountryId);
+        var countries = _context.CountryUw.Get(c => c.CountryName == model.CountryName && c.CountryId != model.CountryId);
         if (countries.Count() > 0)
             return new ApiResponse()
             {

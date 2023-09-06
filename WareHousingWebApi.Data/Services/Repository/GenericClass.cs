@@ -30,31 +30,28 @@ public class GenericClass<Tentity> where Tentity : class
         Delete(entity);
     }
 
-    public virtual void DeleteByRange(Expression<Func<Tentity, bool>> whereVariable = null)
+    public virtual void DeleteByRange(IEnumerable<Tentity> entities) => _table.RemoveRange(entities);
+
+    public virtual IEnumerable<Tentity> Get(Expression<Func<Tentity, bool>>? whereVariable = null, string JoinStrig = "")
     {
         IQueryable<Tentity> query = _table;
-        if (whereVariable is not null)
-            query = query.Where(whereVariable);
 
-        _table.RemoveRange(query);
-    }
-
-    public virtual async Task<IEnumerable<Tentity>> Get(Expression<Func<Tentity, bool>> whereVariable = null, string JoinString = "")
-    {
-        IQueryable<Tentity> query = _table;
-        if (whereVariable != null) query = query.Where(whereVariable);
-      
-        if (!string.IsNullOrWhiteSpace(JoinString))
+        if (whereVariable != null)
         {
-            foreach (var item in JoinString.Split(','))
+            query = query.Where(whereVariable);
+        }
+
+        if (JoinStrig != "")
+        {
+            foreach (string item in JoinStrig.Split(','))
             {
                 query = query.Include(item);
             }
         }
 
-        return await query.ToListAsync();
-
+        return query;
     }
+
 
     public IQueryable<Tentity> GetEn => _table;
     public IQueryable<Tentity> GetEnNoTraking => _table.AsNoTracking();

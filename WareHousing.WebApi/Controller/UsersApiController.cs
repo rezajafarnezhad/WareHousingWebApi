@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WareHousingWebApi.Common.PublicTools;
 using WareHousingWebApi.Data.Services.Interface;
 using WareHousingWebApi.Entities.Entities;
@@ -11,6 +13,8 @@ namespace WareHousing.WebApi.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class UsersApiController : ControllerBase
     {
         private readonly IUnitOfWork _context;
@@ -26,7 +30,7 @@ namespace WareHousing.WebApi.Controller
         [HttpGet]
         public async Task<ApiResponse> Get()
         {
-            var data =  await _context.usersUw.Get();
+            var data = _context.usersUw.Get();
             return new ApiResponse<IEnumerable<Users>>()
             {
                 flag = true,
@@ -70,7 +74,7 @@ namespace WareHousing.WebApi.Controller
 
             };
 
-            var user = await _context.usersUw.Get();
+            var user =  _context.usersUw.Get();
             if (user.Any(c => c.PhoneNumber == model.PhoneNumber || c.MelliCode == model.MelliCode))
                 return new ApiResponse()
                 {
@@ -84,7 +88,7 @@ namespace WareHousing.WebApi.Controller
             {
 
                 model.BirthDayDate = model.BirthDayDate.ConvertShamsiToMiladi().ToString();
-                var mUser = _mapper.Map(model,new Users());
+                var mUser = _mapper.Map(model, new Users());
 
                 var result = await _userManager.CreateAsync(mUser, "123456");
 
@@ -96,14 +100,31 @@ namespace WareHousing.WebApi.Controller
                     else
                         await _userManager.AddToRoleAsync(mUser, "user");
 
+
+                    // ثبت انبار
+                    foreach (var wareHouseIds in model.WareHouseIds)
+                    {
+                        var userInWareHouseId = new UserInWareHouse()
+                        {
+                            WareHouseId = wareHouseIds,
+                            UserIdInWareHouse = mUser.Id,
+                            CreateDateTime = DateTime.Now.ToString(),
+                            //کاربر ثبت کننده
+                            UserId = model.UserId
+                        };
+
+                        await _context.userInWareHouseUW.Create(userInWareHouseId);
+                    }
+
+
                     await _context.SaveAsync();
+
                     return new ApiResponse<Users>()
                     {
                         flag = true,
                         Data = mUser,
                         StatusCode = ApiStatusCode.Success,
-                        Message = ApiStatusCode.Success.GetEnumDisplayName(),
-
+                        Message = ApiStatusCode.Success.GetEnumDisplayName()
                     };
                 }
                 else
@@ -155,6 +176,23 @@ namespace WareHousing.WebApi.Controller
                 var getUser = await _userManager.FindByIdAsync(model.Id);
                 if (getUser != null)
                 {
+                    //edit UserwareHouse
+
+                    _context.userInWareHouseUW.DeleteByRange(_context.userInWareHouseUW.Get(c => c.UserIdInWareHouse == model.Id));
+
+                    foreach (var wareHouseId in model.WareHouseIds)
+                    {
+                        var _userInwareHouse = new UserInWareHouse()
+                        {
+                            UserIdInWareHouse = getUser.Id,
+                            WareHouseId = wareHouseId, 
+                            CreateDateTime = DateTime.Now.ToString(),
+                            UserId = model.UserId,
+                        };
+                        await _context.userInWareHouseUW.Create(_userInwareHouse);
+                    }
+
+
                     model.BirthDayDate = model.BirthDayDate.ConvertShamsiToMiladi().ToString();
                     var mUser = _mapper.Map(model, getUser);
                     var result = await _userManager.UpdateAsync(mUser);
@@ -189,7 +227,40 @@ namespace WareHousing.WebApi.Controller
 
         }
 
+        /// <summary>
+        /// با دریافت بوز ای دی لست انیار هایی که کاربر دسترسی دارد را در قالب لیست از انبار ای دی برمیگرداند
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        [HttpGet("UserWareHouseDropDown/{userid}")]
+        public async Task<ApiResponse> GetUserWareHouseInDropDown([FromRoute] string userid)
+        {
 
+            if (userid is null)
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.NotFound,
+                    Message = ApiStatusCode.NotFound.GetEnumDisplayName(),
+                };
+
+
+            // list<int> warehouseId
+
+            var _wareHouseIds = await _context.userInWareHouseUW
+                .GetEn
+                .Where(c => c.UserIdInWareHouse == userid)
+                .Select(c => c.WareHouseId)
+                .ToListAsync();
+
+            return new ApiResponse<List<int>>()
+            {
+                flag = true,
+                Data = _wareHouseIds,
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName(),
+            };
+        }
 
     }
 }

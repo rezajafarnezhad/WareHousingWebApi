@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.WebSockets;
 using WareHousingWebApi.Common.PublicTools;
@@ -14,6 +15,8 @@ namespace WareHousing.WebApi.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
+
 public class ProductPriceApiController : ControllerBase
 {
     private readonly IUnitOfWork _context;
@@ -81,7 +84,7 @@ public class ProductPriceApiController : ControllerBase
                 Message = ApiStatusCode.BadRequest.GetEnumDisplayName(),
             };
 
-        var getProductPrice = await _context.productPriceUW.Get(
+        var getProductPrice =  _context.productPriceUW.Get(
             c => c.ProductId == model.ProductId
                         && c.FiscalYearId == model.FiscalYearId
                         && c.ActionDate >= model.ActionDate.ConvertShamsiToMiladi());
@@ -112,7 +115,7 @@ public class ProductPriceApiController : ControllerBase
     [HttpGet("GetProductPriceHistory/{productId}/{fiscalYearId}")]
     public async Task<ApiResponse> GetProductPriceHistory([FromRoute] int productId, int fiscalYearId)
     {
-        var _data =await  _context.productPriceUW
+        var _data =  _context.productPriceUW
             .Get(c => c.ProductId == productId && c.FiscalYearId == fiscalYearId);
 
         if (_data is null)

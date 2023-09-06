@@ -460,6 +460,37 @@ namespace WareHousingWebApi.Data.Migrations
                     b.ToTable("Suppliers_tbl");
                 });
 
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.UserInWareHouse", b =>
+                {
+                    b.Property<int>("UserInWareHouseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserInWareHouseId"));
+
+                    b.Property<string>("CreateDateTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserIdInWareHouse")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("WareHouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserInWareHouseId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserIdInWareHouse");
+
+                    b.HasIndex("WareHouseId");
+
+                    b.ToTable("UserInWareHouse");
+                });
+
             modelBuilder.Entity("WareHousingWebApi.Entities.Entities.Users", b =>
                 {
                     b.Property<string>("Id")
@@ -774,6 +805,29 @@ namespace WareHousingWebApi.Data.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("WareHousingWebApi.Entities.Entities.UserInWareHouse", b =>
+                {
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("WareHousingWebApi.Entities.Entities.Users", "Users_WareHous")
+                        .WithMany()
+                        .HasForeignKey("UserIdInWareHouse");
+
+                    b.HasOne("WareHousingWebApi.Entities.Entities.WareHouse", "WareHouse")
+                        .WithMany()
+                        .HasForeignKey("WareHouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Users");
+
+                    b.Navigation("Users_WareHous");
+
+                    b.Navigation("WareHouse");
                 });
 
             modelBuilder.Entity("WareHousingWebApi.Entities.Entities.WareHouse", b =>

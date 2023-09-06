@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using WareHousingWebApi.Data.DbContext;
 using WareHousingWebApi.Entities.Entities;
 
@@ -26,7 +29,28 @@ public static class AddIdentityExtensions
             .AddEntityFrameworkStores<ApplicationDbContext>()
 
             ;
-           
+
+        services.AddAuthentication(op =>
+        {
+            op.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            op.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            op.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(op =>
+        {
+            op.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"])),
+                TokenDecryptionKey=new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["secKey"]))
+            };
+            op.SaveToken = true;
+            op.RequireHttpsMetadata = false;
+
+        });
+
+
         return services;
     }
 }

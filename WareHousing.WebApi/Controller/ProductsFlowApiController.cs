@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WareHousingWebApi.Common.PublicTools;
 using WareHousingWebApi.Data.Services.Interface;
@@ -9,6 +10,8 @@ namespace WareHousing.WebApi.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
+
 public class ProductsFlowApiController : ControllerBase
 {
 

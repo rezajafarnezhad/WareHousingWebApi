@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
@@ -6,24 +7,23 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using WareHousingWebApi.Entities.Entities;
 using WareHousingWebApi.Services.jwtService.Interface;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace WareHousingWebApi.Services.jwtService;
 
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
-
-    private readonly UserManager<Users> _userManager;
-
     private readonly SymmetricSecurityKey _key;
-    public JwtTokenGenerator(UserManager<Users> userManager, IConfiguration config)
+    private readonly string _Seckey;
+    public JwtTokenGenerator(IConfiguration config)
     {
-        _userManager = userManager;
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
+        _Seckey = config["secKey"];
 
     }
 
 
-    public async Task<string> CreateToken(Users user,IList<string> Roles)
+    public async Task<string> CreateToken(Users user, IList<string> Roles)
     {
         var Claims = new List<Claim>();
 
@@ -36,13 +36,27 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         Claims.AddRange(Roles.Select(c => new Claim(ClaimTypes.Role, c)));
 
 
-        var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+        //Hash SecurityKey
+        var encryptorKey = Encoding.UTF8.GetBytes(_Seckey);
+        var encryptorCred = new EncryptingCredentials(new SymmetricSecurityKey(encryptorKey),
+            SecurityAlgorithms.Aes128KW, SecurityAlgorithms.Aes128CbcHmacSha256);
 
+        var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
         var tokenDescriber = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(Claims),
+
+            // امضا
             SigningCredentials = creds,
-            Expires = DateTime.Now.AddDays(1),
+
+            //تاریخ انقضا
+            Expires = DateTime.Now.AddHours(8),
+            // کننده توکن
+            Issuer = "AnbarTo",
+
+            //شنونده
+            Audience = "AnbarTo",
+            EncryptingCredentials = encryptorCred,
         };
 
 
