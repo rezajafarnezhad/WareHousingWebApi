@@ -81,6 +81,13 @@ namespace WareHousing.WebApi.AutoMapperProfile
             this.CreateMap<Inventory, ProductFlowReplyDto>().ReverseMap()
                 
                 ;
+
+
+            this.CreateMap<Customer, CreateCustomerModel>()
+                .ReverseMap()
+                .ForMember(c => c.CreateDateTime,
+                    op => op.MapFrom(x => DateTime.Now.ToString())).ReverseMap();
+            ;
         }
 
     }
