@@ -1,4 +1,6 @@
-﻿namespace WareHousingWebApi.Entities.Models.Dto;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WareHousingWebApi.Entities.Models.Dto;
 
 public class ProductFlowDto
 {

@@ -40,7 +40,8 @@ namespace WareHousingWebApi.WebFramework.ApiResult
         [Display(Name = "لیست خالی می باشد")]
         ListEmpty = 590,
         [Display(Name = "خطای کاربر")]
-        UserMistake = 290
+        UserMistake = 290,
+
     }
 
 }

@@ -1,9 +1,8 @@
 ﻿namespace WareHousingWebApi.Data.Services.Interface
 {
-    public interface IEntityTransaction
+    public interface IEntityTransaction : IDisposable
     {
         void Commit();
-        void Dispose();
         void RollBack();
     }
 }

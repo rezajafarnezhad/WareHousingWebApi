@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WareHousingWebApi.Data.DbContext;
 
@@ -11,9 +12,11 @@ using WareHousingWebApi.Data.DbContext;
 namespace WareHousingWebApi.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230915100244_invoiceNumber")]
+    partial class invoiceNumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -302,9 +305,6 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("InvoiceNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -317,16 +317,10 @@ namespace WareHousingWebApi.Data.Migrations
                     b.Property<byte>("InvoiceType")
                         .HasColumnType("tinyint");
 
-                    b.Property<DateTime?>("ReturnDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("WareHouseId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("fiscalYearId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -336,8 +330,6 @@ namespace WareHousingWebApi.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.HasIndex("WareHouseId");
-
-                    b.HasIndex("fiscalYearId");
 
                     b.ToTable("Invoice");
                 });
@@ -895,15 +887,7 @@ namespace WareHousingWebApi.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WareHousingWebApi.Entities.Entities.FiscalYear", "FiscalYear")
-                        .WithMany()
-                        .HasForeignKey("fiscalYearId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Customer");
-
-                    b.Navigation("FiscalYear");
 
                     b.Navigation("Users");
 

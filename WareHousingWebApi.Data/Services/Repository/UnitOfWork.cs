@@ -1,4 +1,5 @@
 ﻿using WareHousingWebApi.Data.DbContext;
+using WareHousingWebApi.Data.Migrations;
 using WareHousingWebApi.Data.Services.Interface;
 using WareHousingWebApi.Entities.Entities;
 
@@ -23,8 +24,10 @@ namespace WareHousingWebApi.Data.Services.Repository
         private GenericClass<Inventory> _inventory;
         private GenericClass<ProductPrice> _productPrice;
         private GenericClass<ProductLocation> _productLocation;
-        private GenericClass<UserInWareHouse> _userInWareHouse;
+        private GenericClass<Entities.Entities.UserInWareHouse> _userInWareHouse;
         private GenericClass<Customer> _customer;
+        private GenericClass<Invoice> _invoise;
+        private GenericClass<Entities.Entities.InvoiceItems> _invoiceanditem;
 
         public GenericClass<Users> usersUw
         {
@@ -36,18 +39,38 @@ namespace WareHousingWebApi.Data.Services.Repository
                 return _users;
             }
         }
-        public GenericClass<UserInWareHouse> userInWareHouseUW
+        public GenericClass<Entities.Entities.UserInWareHouse> userInWareHouseUW
         {
             get
             {
                 if (_userInWareHouse == null)
-                    _userInWareHouse = new GenericClass<UserInWareHouse>(_context);
+                    _userInWareHouse = new GenericClass<Entities.Entities.UserInWareHouse>(_context);
 
                 return _userInWareHouse;
             }
         }
 
+        public GenericClass<Invoice> invoiceUW
+        {
+            get
+            {
+                if (_invoise == null)
+                    _invoise = new GenericClass<Invoice>(_context);
 
+                return _invoise;
+            }
+        }
+
+        public GenericClass<InvoiceItems> invoiceItemsUW
+        {
+            get
+            {
+                if (_invoiceanditem == null)
+                    _invoiceanditem = new GenericClass<InvoiceItems>(_context);
+
+                return _invoiceanditem;
+            }
+        }
         public GenericClass<Customer> customerUW
         {
             get

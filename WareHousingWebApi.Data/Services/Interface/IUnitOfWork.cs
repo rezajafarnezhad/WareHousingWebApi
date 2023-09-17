@@ -18,8 +18,11 @@ namespace WareHousingWebApi.Data.Services.Interface
         GenericClass<ProductLocation> productLocationUW  { get; }
         GenericClass<UserInWareHouse> userInWareHouseUW { get; }
         GenericClass<Customer> customerUW { get; }
+        GenericClass<Invoice> invoiceUW{ get; }
+        GenericClass<InvoiceItems> invoiceItemsUW{ get; }
 
         void Save();
         Task SaveAsync();
+        IEntityTransaction BeginTransaction();
     }
 }

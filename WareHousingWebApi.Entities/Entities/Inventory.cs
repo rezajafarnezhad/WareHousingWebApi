@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Principal;
 using WareHousingWebApi.Entities.Base;
 
 namespace WareHousingWebApi.Entities.Entities;
@@ -11,6 +12,7 @@ public class Inventory : BaseEntity
     public int ProductId { get; set; }
     public int WareHouseId { get; set; }
     public int FiscalYearId { get; set; }
+    public int? InvoiceId { get; set; }
     public int ProductLocationId { get; set; }
     //تعداد تراکنش در انبار اصلی
     public int ProductCountMain { get; set; }

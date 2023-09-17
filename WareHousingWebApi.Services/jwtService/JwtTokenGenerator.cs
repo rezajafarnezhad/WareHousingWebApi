@@ -2,7 +2,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using WareHousingWebApi.Entities.Entities;
@@ -38,10 +37,12 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
         //Hash SecurityKey
         var encryptorKey = Encoding.UTF8.GetBytes(_Seckey);
+
         var encryptorCred = new EncryptingCredentials(new SymmetricSecurityKey(encryptorKey),
             SecurityAlgorithms.Aes128KW, SecurityAlgorithms.Aes128CbcHmacSha256);
 
         var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
+
         var tokenDescriber = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(Claims),
@@ -68,3 +69,16 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
 
 }
+
+
+//public class mapappjsoninclass
+//{
+//    public void d(IServiceCollection services , IConfiguration config)
+//    {
+//        var option = new optionclass();
+
+//        var section = config.GetSection("jwt");
+//        section.Bind(option);
+//        services.Configure<optionclass> config.GetSection("jwt"));
+//    }
+//}

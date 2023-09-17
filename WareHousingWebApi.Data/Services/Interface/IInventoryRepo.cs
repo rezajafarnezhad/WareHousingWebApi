@@ -22,4 +22,13 @@ public interface IInventoryRepo
     Task<int> GetPhysicalWastageStockForBranch(int inventoryId);
 
     Task<List<ProductFlowReplyDto>> GetProductFlow(ProductFlowDto model);
+
+    /// <summary>
+    /// موجودی یک کالا
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <param name="fiscalYearId"></param>
+    /// <param name="wareHouseId"></param>
+    /// <returns></returns>
+    Task<int> GetProductStock(int productId, int fiscalYearId, int wareHouseId);
 }

@@ -27,7 +27,7 @@ public class InventoryRepo : UnitOfWork, IInventoryRepo
                                                                     && x.FiscalYearId == model.FiscalYearId
                                                                     && x.WareHouseId == model.WareHouseId)
 
-                    .Sum(x => x.OperationType == 1 ? x.ProductCountMain :
+                    .Sum(x =>  x.OperationType == 1 ? x.ProductCountMain :
                                                x.OperationType == 2 ? -x.ProductCountMain :
                                                x.OperationType == 3 ? -x.ProductWastage :
                                                x.OperationType == 4 ? x.ProductWastage :
@@ -48,6 +48,35 @@ public class InventoryRepo : UnitOfWork, IInventoryRepo
         return await lstProductStock;
     }
 
+
+    /// <summary>
+    /// موجودی یک کالا
+    /// </summary>
+    /// <param name="productId"></param>
+    /// <param name="fiscalYearId"></param>
+    /// <param name="wareHouseId"></param>
+    /// <returns></returns>
+    public async Task<int> GetProductStock(int productId, int fiscalYearId, int wareHouseId)
+    {
+        var _count = this.inventoryUw
+            .GetEn
+            .Where(c => c.ProductId == productId)
+            .Where(c => c.WareHouseId == wareHouseId)
+            .Where(c => c.FiscalYearId == fiscalYearId)
+            .Sum(x =>
+                x.OperationType == 1 ? x.ProductCountMain :
+                x.OperationType == 2 ? -x.ProductCountMain :
+                x.OperationType == 3 ? x.ProductWastage :
+                x.OperationType == 4 ? -x.ProductWastage :
+                x.OperationType == 6 ? x.ProductCountMain :
+                x.OperationType == 5 ? -x.ProductCountMain : 0);
+
+        return _count;
+
+    }
+
+
+
     /// <summary>
     /// دریافت موجوذی هر سری ساخت
     /// </summary>
@@ -55,13 +84,15 @@ public class InventoryRepo : UnitOfWork, IInventoryRepo
     /// <returns></returns>
     public async Task<int> GetPhysicalStockForBranch(int inventoryId)
     {
-        var _physicalStock = this.inventoryUw.GetEnNoTraking
+        var _physicalStock = this
+            .inventoryUw
+            .GetEnNoTraking
             .Where(c => c.Id == inventoryId || c.ReferenceId == inventoryId)
             .Sum(x =>
                 x.OperationType == 1 ? x.ProductCountMain :
                 x.OperationType == 2 ? -x.ProductCountMain :
-                x.OperationType == 3 ? x.ProductWastage :
-                x.OperationType == 4 ? -x.ProductWastage :
+                x.OperationType == 3 ? -x.ProductWastage :
+                x.OperationType == 4 ? x.ProductWastage :
                 x.OperationType == 6 ? x.ProductCountMain :
                 x.OperationType == 5 ? -x.ProductCountMain : 0);
         return _physicalStock;

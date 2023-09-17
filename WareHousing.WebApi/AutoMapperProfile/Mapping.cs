@@ -80,6 +80,13 @@ namespace WareHousing.WebApi.AutoMapperProfile
 
             this.CreateMap<Inventory, ProductFlowReplyDto>().ReverseMap()
                 
+                ; 
+            
+            this.CreateMap<WareHouse, CreateWareHouse>().ReverseMap()
+                
+                ;
+            this.CreateMap<WareHouse, EditWareHouse>().ReverseMap()
+
                 ;
 
 
@@ -88,6 +95,33 @@ namespace WareHousing.WebApi.AutoMapperProfile
                 .ForMember(c => c.CreateDateTime,
                     op => op.MapFrom(x => DateTime.Now.ToString())).ReverseMap();
             ;
+
+
+            this.CreateMap<Invoice, CreateInvoice>()
+                .ReverseMap()
+                .ForMember(c=>c.InvoiceNumber,
+                    op=>op.MapFrom(x=>$"{DateTime.Now.ConvertMiladiToShamsi("yyyy/MM/dd HH:mm:ss")}_InvoiceNumber"))
+               
+                .ForMember(c => c.CreateDateTime,
+                    op => op.MapFrom(x => DateTime.Now.ToString()))
+                .ForMember(c => c.Date,
+                    op => op.MapFrom(x => DateTime.Now))
+                .ForMember(c => c.InvoiceType,
+                    op => op.MapFrom(x => 1))
+                .ForMember(c => c.InvoiceStatus,
+                    op => op.MapFrom(x => 1))
+                ;
+            ;
+
+
+
+
+            this.CreateMap<Invoice, InvoiceList>()
+                .ReverseMap();
+          
+            this.CreateMap<InvoiceItems, InvoiceItemList>()
+                .ReverseMap();
+
         }
 
     }

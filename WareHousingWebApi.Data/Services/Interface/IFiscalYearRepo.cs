@@ -5,3 +5,4 @@ public interface IFiscalYearRepo
     Task<bool> CheckDatesForFiscalYear(DateTime startDate, DateTime endDate);
     Task<bool> IsExistDates(string startDate, string endDate);
 }
+
