@@ -2,7 +2,6 @@
 using Microsoft.OpenApi.Models;
 using WareHousingWebApi.Data.Services.Interface;
 using WareHousingWebApi.Data.Services.Repository;
-using WareHousingWebApi.Entities.Entities;
 using WareHousingWebApi.Services.jwtService;
 using WareHousingWebApi.Services.jwtService.Interface;
 using WareHousingWebApi.WebFramework.Extensions;
@@ -97,11 +96,15 @@ app.MapControllers();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    app.UseSwagger(options =>
     {
-        c.SwaggerEndpoint("./v1/swagger.json", "My API V1"); //originally "./swagger/v1/swagger.json"
+        options.SerializeAsV2 = true;
     });
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    });
+
     app.UseDeveloperExceptionPage();
 }
 

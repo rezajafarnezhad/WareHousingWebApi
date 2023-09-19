@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WareHousingWebApi.Common.PublicTools;
 using WareHousingWebApi.Data.DbContext;
 using WareHousingWebApi.Data.Services.Interface;
+using WareHousingWebApi.Entities.Entities;
 using WareHousingWebApi.Entities.Models;
 using WareHousingWebApi.Entities.Models.Dto;
 
@@ -139,5 +140,92 @@ public class InventoryRepo : UnitOfWork, IInventoryRepo
 
 
             return _data;
+    }
+
+    public async Task GetProductFromBranch(int productId, int productCount, int wareHouseId, int fisclaYearId, int invoiceId, string userId)
+    {
+        //دریافت همه سری انقضا هاُ
+        var _productRefrence =
+            await this.inventoryUw
+            .GetEn
+            .AsNoTracking()
+            .Where(c => c.ProductId == productId)
+            .Where(c => c.WareHouseId == wareHouseId)
+            .Where(c => c.FiscalYearId == fisclaYearId)
+            .Where(c => c.OperationType == 1)
+            .OrderByDescending(c => c.ExpireData)
+            .ToListAsync();
+
+        //حدف سری ساخت های بدون موجودی
+        List<int> ZeroStock = new List<int>();
+
+        for (int i = 0; i < _productRefrence.Count(); i++)
+        {
+            if (await GetPhysicalStockForBranch(_productRefrence[i].Id) == 0)
+            {
+                ZeroStock.Add(_productRefrence[i].Id);
+            }
+        }
+
+        var expireDateWithStock = _productRefrence
+            .Where(c => !ZeroStock.Contains(c.Id))
+            .OrderBy(c => c.ExpireData)
+            .ToList();
+
+        //برداشت ار هر سری انقضا
+
+        int savedStock = productCount;
+        for (int j = 0; j < expireDateWithStock.Count(); j++)
+        {
+            //بدست اوردن موجودی هر سری
+            int getBranchStock = await GetPhysicalStockForBranch(expireDateWithStock[j].Id);
+            if (savedStock <= getBranchStock)
+            {
+                var _inventory = new Inventory()
+                {
+                    OperationDate = DateTime.Now,
+                    CreateDateTime = DateTime.Now.ToString(),
+                    OperationType = 5,
+                    Description = "فروش",
+                    FiscalYearId = fisclaYearId,
+                    WareHouseId = wareHouseId,
+                    ProductId = productId,
+                    InvoiceId = invoiceId,
+                    UserId = userId,
+                    ProductWastage = 0,
+                    ProductCountMain = savedStock,
+                    ProductLocationId = this.inventoryUw.Get(c => c.Id == expireDateWithStock[j].Id).Select(c => c.ProductLocationId).Single(),
+                    ReferenceId = expireDateWithStock[j].Id,
+                    ExpireData = expireDateWithStock[j].ExpireData,
+                };
+                await this.inventoryUw.Create(_inventory);
+                break;
+            }
+            else if (savedStock > getBranchStock)
+            {
+                savedStock -= getBranchStock;
+                var _inventory = new Inventory()
+                {
+                    OperationDate = DateTime.Now,
+                    CreateDateTime = DateTime.Now.ToString(),
+                    OperationType = 5,
+                    Description = "فروش",
+                    FiscalYearId = fisclaYearId,
+                    WareHouseId = wareHouseId,
+                    ProductId = productId,
+                    InvoiceId = invoiceId,
+                    UserId = userId,
+                    ProductWastage = 0,
+                    ProductCountMain = getBranchStock,
+                    ProductLocationId = this.inventoryUw.Get(c => c.Id == expireDateWithStock[j].Id).Select(c => c.ProductLocationId).Single(),
+                    ReferenceId = expireDateWithStock[j].Id,
+                    ExpireData = expireDateWithStock[j].ExpireData,
+                };
+                await this.inventoryUw.Create(_inventory);
+            }
+
+            await this.SaveAsync();
+
+        }
     }
 }

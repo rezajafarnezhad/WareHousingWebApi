@@ -31,4 +31,6 @@ public interface IInventoryRepo
     /// <param name="wareHouseId"></param>
     /// <returns></returns>
     Task<int> GetProductStock(int productId, int fiscalYearId, int wareHouseId);
+
+    Task GetProductFromBranch(int productId, int productCount, int wareHouseId, int fisclaYearId, int invoiceId, string userId);
 }

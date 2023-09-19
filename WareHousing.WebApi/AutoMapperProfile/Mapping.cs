@@ -108,8 +108,6 @@ namespace WareHousing.WebApi.AutoMapperProfile
                     op => op.MapFrom(x => DateTime.Now))
                 .ForMember(c => c.InvoiceType,
                     op => op.MapFrom(x => 1))
-                .ForMember(c => c.InvoiceStatus,
-                    op => op.MapFrom(x => 1))
                 ;
             ;
 
@@ -122,6 +120,12 @@ namespace WareHousing.WebApi.AutoMapperProfile
             this.CreateMap<InvoiceItems, InvoiceItemList>()
                 .ReverseMap();
 
+
+            this.CreateMap<Invoice, InvoiceDetailsPrint>()
+                .ReverseMap();
+
+            this.CreateMap<InvoiceItems, InvoiceItemForDetails>()
+                .ReverseMap();
         }
 
     }

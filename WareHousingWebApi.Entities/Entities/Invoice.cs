@@ -16,7 +16,7 @@ public class Invoice :BaseEntity
     
     /// <summary>
     ///  یک فروش
-    ///دو مرجوغی  
+    /// دو مرجوغی  
     /// 
     /// 
     /// 
@@ -27,7 +27,7 @@ public class Invoice :BaseEntity
 
     /// <summary>
     /// 1=  بسته شده
-    /// 
+    /// 2 = فاکتور موقت یا پیش فاکتور
     /// 
     /// </summary>
     public byte InvoiceStatus { get; set; }

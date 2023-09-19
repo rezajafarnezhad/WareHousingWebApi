@@ -15,7 +15,7 @@ public class InvoiceItems : BaseEntity
     public int SalesPrice { get; set; }
     public int CoverPrice { get; set; }
 
-
+    public DateTime Date { get; set; }
     [ForeignKey(nameof(ProductId))]
     public Products Product { get; set; }
     

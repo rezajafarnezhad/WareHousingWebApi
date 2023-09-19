@@ -119,11 +119,17 @@ public class InvoiceApiController : ControllerBase
                         CoverPrice = _productPrice.CoverPrice,
                         PurchasePrice = _productPrice.PurchasePrice,
                         SalesPrice = _productPrice.SalesPrice,
+                        Date=DateTime.Now
                     };
 
                     await _context.invoiceItemsUW.Create(_InvoiceItem);
-                    await GetProductFromBranch(model.productIds[i], model.productcount[i], model.wareHouseId, model.fiscalYearId
-                     , _invoice.Id, model.userId);
+                    if (model.InvoiceStatus == 1)
+                    {
+                        //کسر از موجودی
+                        await _inventoryRepo.GetProductFromBranch(model.productIds[i], model.productcount[i], model.wareHouseId, model.fiscalYearId
+                            , _invoice.Id, model.userId);
+                    }
+                   
                 }
 
                 await _context.SaveAsync();
@@ -263,93 +269,148 @@ public class InvoiceApiController : ControllerBase
     }
 
 
-    public async Task GetProductFromBranch(int productId, int productCount, int wareHouseId, int fisclaYearId, int invoiceId, string userId)
+    [HttpPost("SetInvoiceToClose")]
+    public async Task<ApiResponse> SetInvoiceToClose([FromBody] CloseInvoice model)
     {
-        //دریافت همه سری انقضا هاُ
-        var _productRefrence =
-            await _context
-            .inventoryUw
-            .GetEn
-            .AsNoTracking()
-            .Where(c => c.ProductId == productId)
-            .Where(c => c.WareHouseId == wareHouseId)
-            .Where(c => c.FiscalYearId == fisclaYearId)
-            .Where(c => c.OperationType == 1)
-            .OrderByDescending(c => c.ExpireData)
-            .ToListAsync();
+        if (!ModelState.IsValid)
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.NotFound,
+                Message = ApiStatusCode.NotFound.GetEnumDisplayName(),
+            };
 
-        //حدف سری ساخت های بدون موجودی
-        List<int> ZeroStock = new List<int>();
-
-        for (int i = 0; i < _productRefrence.Count(); i++)
+        try
         {
-            if (await _inventoryRepo.GetPhysicalStockForBranch(_productRefrence[i].Id) == 0)
-            {
-                ZeroStock.Add(_productRefrence[i].Id);
-            }
-        }
+            var _invoice =await _context.invoiceUW.GetById(model.invoiceId);
+            _invoice.InvoiceStatus = 1;
+            _context.invoiceUW.Update(_invoice);
 
-        var expireDateWithStock = _productRefrence
-            .Where(c => !ZeroStock.Contains(c.Id))
-            .OrderBy(c => c.ExpireData)
-            .ToList();
+            //کسر از موجودی
+            var _invoiceItems = _context.invoiceItemsUW.Get(c => c.InvoiceId == model.invoiceId).ToList();
 
-        //برداشت ار هر سری انقضا
-
-        int savedStock = productCount;
-        for (int j = 0; j < expireDateWithStock.Count(); j++)
-        {
-            //بدست اوردن موجودی هر سری
-            int getBranchStock = await _inventoryRepo.GetPhysicalStockForBranch(expireDateWithStock[j].Id);
-            if (savedStock <= getBranchStock)
+            foreach (var items in _invoiceItems)
             {
-                var _inventory = new Inventory()
-                {
-                    OperationDate = DateTime.Now,
-                    CreateDateTime = DateTime.Now.ToString(),
-                    OperationType = 5,
-                    Description = "فروش",
-                    FiscalYearId = fisclaYearId,
-                    WareHouseId = wareHouseId,
-                    ProductId = productId,
-                    InvoiceId = invoiceId,
-                    UserId = userId,
-                    ProductWastage = 0,
-                    ProductCountMain = savedStock,
-                    ProductLocationId = _context.inventoryUw.Get(c => c.Id == expireDateWithStock[j].Id).Select(c => c.ProductLocationId).Single(),
-                    ReferenceId = expireDateWithStock[j].Id,
-                    ExpireData = expireDateWithStock[j].ExpireData,
-                };
-                await _context.inventoryUw.Create(_inventory);
-                break;
-            }
-            else if (savedStock > getBranchStock)
-            {
-                savedStock -= getBranchStock;
-                var _inventory = new Inventory()
-                {
-                    OperationDate = DateTime.Now,
-                    CreateDateTime = DateTime.Now.ToString(),
-                    OperationType = 5,
-                    Description = "فروش",
-                    FiscalYearId = fisclaYearId,
-                    WareHouseId = wareHouseId,
-                    ProductId = productId,
-                    InvoiceId = invoiceId,
-                    UserId = userId,
-                    ProductWastage = 0,
-                    ProductCountMain = getBranchStock,
-                    ProductLocationId = _context.inventoryUw.Get(c => c.Id == expireDateWithStock[j].Id).Select(c => c.ProductLocationId).Single(),
-                    ReferenceId = expireDateWithStock[j].Id,
-                    ExpireData = expireDateWithStock[j].ExpireData,
-                };
-                await _context.inventoryUw.Create(_inventory);
+                await _inventoryRepo.GetProductFromBranch(items.ProductId, items.Count, _invoice.WareHouseId, model.fiscalYearId,
+                    _invoice.Id, model.userid);
             }
 
             await _context.SaveAsync();
 
+            return new ApiResponse()
+            {
+                flag = true,
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName(),
+            };
+
+        }
+        catch (Exception )
+        {
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.NotFound,
+                Message = ApiStatusCode.NotFound.GetEnumDisplayName(),
+            };
         }
 
 
     }
+
+    [HttpDelete("DeleteTemporaryInvoice")]
+    public async Task<ApiResponse> DeleteTemporaryInvoice([FromQuery] int id)
+    {
+        if(id <= 0)
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.NotFound,
+                Message = ApiStatusCode.NotFound.GetEnumDisplayName(),
+            };
+
+        try
+        {
+            var _invoice = await _context.invoiceUW.GetById(id);
+            _context.invoiceUW.Delete(_invoice);
+
+            //Delete Items
+            var _InvoiceItems = _context.invoiceItemsUW.Get(c => c.InvoiceId == _invoice.Id).ToList();
+            _context.invoiceItemsUW.DeleteByRange(_InvoiceItems);
+            await _context.SaveAsync();
+            return new ApiResponse()
+            {
+                flag = true,
+                StatusCode = ApiStatusCode.Success,
+                Message = ApiStatusCode.Success.GetEnumDisplayName(),
+            };
+        }
+        catch (Exception)
+        {
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.NotFound,
+                Message = ApiStatusCode.NotFound.GetEnumDisplayName(),
+            };
+        }
+        
+
+    }
+
+    /// <summary>
+    /// For Print
+    /// </summary>
+    [HttpGet("PrintInvoice")]
+    public async Task<ApiResponse> GetInvoiceDetails([FromQuery] int id)
+    {
+
+        if (id <= 0)
+            return new ApiResponse()
+            {
+                flag = false,
+                StatusCode = ApiStatusCode.NotFound,
+                Message = ApiStatusCode.NotFound.GetEnumDisplayName(),
+            };
+
+
+        var _data = await _invoiceRepo.GetInvoiceForPrint(id);
+        return new ApiResponse<InvoiceDetailsPrint>()
+        {
+            flag = true,
+            Data = _data,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName(),
+        };
+    }
+
+
+    [HttpGet("AllProductInvoice")]
+    public async Task<ApiResponse> AllProductInvoice([FromBody] IndeedParameterForAllProduct model)
+    {
+
+        var _data = await _invoiceRepo.GetProductsInvoice(model);
+        return new ApiResponse<List<AllProductForInvoice>>()
+        {
+            flag = true,
+            Data = _data,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName(),
+        };
+
+    }
+
+    [HttpGet("GroupInvoice")]
+    public async Task<ApiResponse> GroupSeparationInvoice([FromBody] GroupInvoiceDto model)
+    {
+        var _data = await _invoiceRepo.GroupInvoice(model);
+        return new ApiResponse<List<GroupInvoiceList>>()
+        {
+            flag = true,
+            Data = _data,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName(),
+        };
+    }
+
 }

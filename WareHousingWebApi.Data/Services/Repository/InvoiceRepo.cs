@@ -14,6 +14,7 @@ namespace WareHousingWebApi.Data.Services.Repository;
 public class InvoiceRepo : UnitOfWork, IInvoiceRepo
 {
     private readonly IMapper _mapper;
+   
     public InvoiceRepo(ApplicationDbContext context, IMapper mapper) : base(context)
     {
         _mapper = mapper;
@@ -123,6 +124,9 @@ public class InvoiceRepo : UnitOfWork, IInvoiceRepo
     }
 
 
+    
+
+
     public async Task<List<InvoiceItemList>> GetInvoiceList(int Id)
     {
 
@@ -130,6 +134,90 @@ public class InvoiceRepo : UnitOfWork, IInvoiceRepo
             
             this.invoiceItemsUW.GetEnNoTraking
                 .Where(c=>c.InvoiceId == Id)).ToListAsync();
+
+        return _data;
+    }
+
+
+    public async Task<InvoiceDetailsPrint> GetInvoiceForPrint(int id)
+    {
+        var _data =await _mapper
+            .ProjectTo<InvoiceDetailsPrint>(this.invoiceUW.GetEnNoTraking
+                .Include(c=>c.Customer)
+                .Where(c=>c.Id == id))
+            .SingleOrDefaultAsync();
+        return _data;
+    }
+
+
+    public async Task<List<AllProductForInvoice>> GetProductsInvoice(IndeedParameterForAllProduct model)
+    {
+        if (string.IsNullOrWhiteSpace(model.FromDate))
+            model.FromDate = "1300/01/01";
+
+
+        if (string.IsNullOrWhiteSpace(model.ToDate))
+            model.ToDate = "1900/01/01";
+
+        var Fromdata = model.FromDate.ConvertShamsiToMiladi();
+        var Todata = model.ToDate.ConvertShamsiToMiladi();
+
+
+        var _data =
+            await 
+                this.inventoryUw
+                .GetEnNoTraking
+                .Where(c => c.OperationType == 5)
+                .Where(c => c.WareHouseId == model.wareHouseId)
+                .Where(c => c.FiscalYearId == model.fiscalYearId)
+                .Where(c => c.OperationDate.Date >= Fromdata.Date && c.OperationDate <= Todata.Date)
+                .Include(c => c.Product)
+                .GroupBy(g => new { g.ProductId, g.Product.ProductName, g.ExpireData, g.Product.ProductCode })
+                .Select(c => new AllProductForInvoice()
+                {
+                    ExpireDate = c.Key.ExpireData,
+                    ProductCode = c.Key.ProductCode,
+                    ProductId = c.Key.ProductId,
+                    ProductName = c.Key.ProductName,
+                    ProductCount=c.Sum(c=>c.ProductCountMain)
+                }).ToListAsync();
+
+
+        return _data;
+    }
+
+
+    public async Task<List<GroupInvoiceList>> GroupInvoice(GroupInvoiceDto model)
+    {
+        if (string.IsNullOrWhiteSpace(model.FromDate))
+            model.FromDate = "1300/01/01";
+
+
+        if (string.IsNullOrWhiteSpace(model.ToDate))
+            model.ToDate = "1900/01/01";
+
+        var Fromdata = model.FromDate.ConvertShamsiToMiladi();
+        var Todata = model.ToDate.ConvertShamsiToMiladi();
+
+
+        var _data =
+            await
+                this.invoiceItemsUW
+                    .GetEnNoTraking
+                    .Where(c => c.Invoice.WareHouseId == model.wareHouseId)
+                    .Where(c => c.Date.Date >= Fromdata.Date && c.Date.Date <= Todata.Date)
+                    .Include(c => c.Product)
+                    .Include(c => c.Invoice)
+                    .Select(v => new GroupInvoiceList()
+                    {
+                        InvoiceId = v.InvoiceId,
+                        InvoiceNumber=v.Invoice.InvoiceNumber,
+                        ProductCode=v.Product.ProductCode,
+                        ProductId=v.Product.ProductId,
+                        ProductName = v.Product.ProductName,
+                        ProductCount= v.Count
+
+                    }).ToListAsync();
 
         return _data;
     }

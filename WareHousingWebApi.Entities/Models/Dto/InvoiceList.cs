@@ -15,4 +15,5 @@ public class InvoiceList
     public byte InvoiceType { get; set; }
     public int InvoiceTotalPrice { get; set; } 
     public byte InvoiceStatus { get; set; }
+    public DateTime? ReturnDate { get; set; }
 }

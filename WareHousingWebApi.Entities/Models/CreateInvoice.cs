@@ -19,6 +19,9 @@ public class CreateInvoice
     [Required]
     public string userId { get; set; }
 
+    [Required]
+
+    public byte InvoiceStatus { get; set; }
 
 
 }

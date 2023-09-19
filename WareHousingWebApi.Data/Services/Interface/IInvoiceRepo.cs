@@ -18,4 +18,7 @@ public interface IInvoiceRepo
     Task<int> CalculateInvoicePrice(int[] productid, int[] count, int fiscalYaerId);
     Task<List<InvoiceList>> GetInvoiceList(InvoiceListDto model);
     Task<List<InvoiceItemList>> GetInvoiceList(int Id);
+    Task<InvoiceDetailsPrint> GetInvoiceForPrint(int id);
+    Task<List<AllProductForInvoice>> GetProductsInvoice(IndeedParameterForAllProduct model);
+    Task<List<GroupInvoiceList>> GroupInvoice(GroupInvoiceDto model);
 }
