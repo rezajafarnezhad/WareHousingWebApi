@@ -97,33 +97,38 @@ public class InventoryRepo : UnitOfWork, IInventoryRepo
             .inventoryUw
             .GetEn
             .Where(c => c.Id == inventoryId || c.ReferenceId == inventoryId)
-            .Select (c => c.Id).ToList();
+            .Select(c => c.Id).ToList();
 
-            int _physicalStock2 = this.inventoryUw.GetEn.
-            Where(s=> _physicalStock.Contains(s.ReferenceId) || s.Id == inventoryId).ToList()
-            .Sum(x =>
-                x.OperationType == 1 ? x.ProductCountMain :
-                x.OperationType == 2 ? -x.ProductCountMain :
-                x.OperationType == 3 ? -x.ProductWastage :
-                x.OperationType == 4 ? x.ProductWastage :
-                x.OperationType == 6 ? x.ProductCountMain :
-                x.OperationType == 5 ? -x.ProductCountMain :
-                x.OperationType == 7 ? x.ProductCountMain :
-                x.OperationType == 8 ? -x.ProductCountMain :
-                0);
-        
+        int _physicalStock2 = this.inventoryUw.GetEn.
+        Where(s => _physicalStock.Contains(s.ReferenceId) || s.Id == inventoryId).ToList()
+        .Sum(x =>
+            x.OperationType == 1 ? x.ProductCountMain :
+            x.OperationType == 2 ? -x.ProductCountMain :
+            x.OperationType == 3 ? -x.ProductWastage :
+            x.OperationType == 4 ? x.ProductWastage :
+            x.OperationType == 6 ? x.ProductCountMain :
+            x.OperationType == 5 ? -x.ProductCountMain :
+            x.OperationType == 7 ? x.ProductCountMain :
+            x.OperationType == 8 ? -x.ProductCountMain :
+            0);
+
         return _physicalStock2;
+
+        
     }
 
     public int GetPhysicalStockForBranch2(int inventoryId)
     {
-        var _physicalStock = this
+        var _physicalStock =
+            this
             .inventoryUw
             .GetEn
             .Where(c => c.Id == inventoryId || c.ReferenceId == inventoryId)
             .Select(c => c.Id).ToList();
 
-        int _physicalStock2 = this.inventoryUw.GetEn.
+        int _physicalStock2 =
+            this.inventoryUw
+                .GetEn.
             Where(s => _physicalStock.Contains(s.ReferenceId) || s.Id == inventoryId).ToList()
             .Sum(x =>
                 x.OperationType == 1 ? x.ProductCountMain :
@@ -137,6 +142,8 @@ public class InventoryRepo : UnitOfWork, IInventoryRepo
                 0);
 
         return _physicalStock2;
+
+        
     }
 
 

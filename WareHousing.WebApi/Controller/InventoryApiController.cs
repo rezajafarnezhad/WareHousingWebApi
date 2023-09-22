@@ -72,12 +72,26 @@ public class InventoryApiController : ControllerBase
         {
          
             byte operationValue =  (byte)(model.BalanceStockAdd == "on" ? 7 : (string.IsNullOrEmpty(model.BalanceStockAdd)) ? 1 : 0);
-
+            
             var _addProductStock = _mapper.Map(model, new Inventory());
             _addProductStock.CreateDateTime = DateTime.Now.ToString();
             _addProductStock.OperationType = operationValue; //ورود به انبار
             _addProductStock.ProductWastage = 0;
-            _addProductStock.ReferenceId = 0;
+
+            if (model.BalanceStockAdd == "on")
+            {
+                var ExDate = model.ExpireData.ConvertShamsiToMiladi();
+                
+                var InventoryId = _context.inventoryUw.GetEn
+                    .Where(c => c.ExpireData.Date == ExDate.Date)
+                    .Select(c => c.Id).First();
+
+                _addProductStock.ReferenceId = InventoryId;
+            }
+            else
+            {
+                _addProductStock.ReferenceId = 0;
+            }
             await _context.inventoryUw.Create(_addProductStock);
             await _context.SaveAsync();
             return new ApiResponse()
