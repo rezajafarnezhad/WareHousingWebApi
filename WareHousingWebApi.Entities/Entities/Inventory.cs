@@ -29,6 +29,8 @@ public class Inventory : BaseEntity
     /// 4=گسر ار انبار ضایعات
     /// 5 = فروش
     /// 6=مرجوغی
+    /// 7=بالانس افزایشی
+    /// 8=بالانس کاهشی
     /// </summary>
     public byte OperationType { get; set; }
 

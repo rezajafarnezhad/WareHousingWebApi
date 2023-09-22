@@ -22,6 +22,7 @@ namespace WareHousingWebApi.Entities.Models
         public string Token { get; set; }
         public string UserName { get; set; }
         public IList<string>? Roles { get; set; }
+        public byte fiscalStatus { get; set; }
     }
 }
 

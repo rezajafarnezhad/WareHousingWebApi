@@ -56,7 +56,10 @@ public class InvoiceRepo : UnitOfWork, IInvoiceRepo
                 x.OperationType == 3 ? -x.ProductWastage :
                 x.OperationType == 4 ? x.ProductWastage :
                 x.OperationType == 6 ? x.ProductCountMain :
-                x.OperationType == 5 ? -x.ProductCountMain : 0);
+                x.OperationType == 5 ? -x.ProductCountMain :
+                x.OperationType == 7 ? x.ProductCountMain :
+                x.OperationType == 8 ? -x.ProductCountMain :
+                0);
         return ProductStock;
     }
 

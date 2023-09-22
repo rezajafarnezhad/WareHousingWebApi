@@ -19,6 +19,10 @@ public class AddProductStock
     [Required(AllowEmptyStrings = false, ErrorMessage = "تاریخ انقضا وارد شود")]
     public string ExpireData { get; set; }
     public string Description { get; set; }
+    
+    //on
+    //Null
+    public string? BalanceStockAdd { get; set; }
 }
 
 public class ExitStockModel
@@ -38,6 +42,10 @@ public class ExitStockModel
     public string Description { get; set; }
     public int ReferenceId { get; set; }
     public int ProductLocationId { get; set; }
+    //on
+    //Null
+    public string? BalanceStockRemove { get; set; }
+
 }
 
 

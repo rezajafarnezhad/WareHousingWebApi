@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WareHousingWebApi.Common.PublicTools;
 using WareHousingWebApi.Data.Services.Interface;
 using WareHousingWebApi.Entities.Entities;
 using WareHousingWebApi.Entities.Models;
+using WareHousingWebApi.Entities.Models.Dto;
 using WareHousingWebApi.WebFramework.ApiResult;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace WareHousing.WebApi.Controller;
 
@@ -71,9 +70,12 @@ public class InventoryApiController : ControllerBase
 
         try
         {
+         
+            byte operationValue =  (byte)(model.BalanceStockAdd == "on" ? 7 : (string.IsNullOrEmpty(model.BalanceStockAdd)) ? 1 : 0);
+
             var _addProductStock = _mapper.Map(model, new Inventory());
             _addProductStock.CreateDateTime = DateTime.Now.ToString();
-            _addProductStock.OperationType = 1; //ورود به انبار
+            _addProductStock.OperationType = operationValue; //ورود به انبار
             _addProductStock.ProductWastage = 0;
             _addProductStock.ReferenceId = 0;
             await _context.inventoryUw.Create(_addProductStock);
@@ -211,10 +213,11 @@ public class InventoryApiController : ControllerBase
         {
 
             var _ExitProductStock = _mapper.Map(model, new Inventory());
+            byte operationValue = (byte)(model.BalanceStockRemove == "on" ? 8 : (string.IsNullOrEmpty(model.BalanceStockRemove)) ? 2 : 0);
 
             var getinfo = await _context.inventoryUw.GetEn.Where(c => c.Id == model.ReferenceId).SingleAsync();
             _ExitProductStock.CreateDateTime = DateTime.Now.ToString();
-            _ExitProductStock.OperationType = 2; //خروج از انبار
+            _ExitProductStock.OperationType = operationValue; //خروج از انبار
             _ExitProductStock.ProductWastage = 0;
             _ExitProductStock.ProductLocationId = getinfo.ProductLocationId;
             _ExitProductStock.ExpireData = getinfo.ExpireData;
@@ -391,4 +394,17 @@ public class InventoryApiController : ControllerBase
         }
     }
 
+
+    [HttpGet("WareHouseHandling")]
+    public ApiResponse GetWareHouseHandling([FromBody] InventoryQueryMaker model)
+    {
+        var _data = _inventoryRepo.GetWareHouseHanding(model);
+        return new ApiResponse<List<WareHouseHandling>>()
+        {
+            flag = true,
+            Data = _data,
+            StatusCode = ApiStatusCode.Success,
+            Message = ApiStatusCode.Success.GetEnumDisplayName()
+        };
+    }
 }

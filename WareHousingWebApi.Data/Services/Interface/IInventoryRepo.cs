@@ -33,4 +33,5 @@ public interface IInventoryRepo
     Task<int> GetProductStock(int productId, int fiscalYearId, int wareHouseId);
 
     Task GetProductFromBranch(int productId, int productCount, int wareHouseId, int fisclaYearId, int invoiceId, string userId);
+    List<WareHouseHandling> GetWareHouseHanding(InventoryQueryMaker model);
 }
