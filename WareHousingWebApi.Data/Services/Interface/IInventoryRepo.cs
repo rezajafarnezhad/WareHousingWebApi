@@ -34,4 +34,5 @@ public interface IInventoryRepo
 
     Task GetProductFromBranch(int productId, int productCount, int wareHouseId, int fisclaYearId, int invoiceId, string userId);
     List<WareHouseHandling> GetWareHouseHanding(InventoryQueryMaker model);
+    bool TransferToNewFiscalYear(CloseFiscalYear model);
 }

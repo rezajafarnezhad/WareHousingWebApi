@@ -1,20 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.IdentityModel.Abstractions;
-using System.Transactions;
-using System.Xml.Linq;
 using WareHousingWebApi.Common.PublicTools;
-using WareHousingWebApi.Data.Migrations;
 using WareHousingWebApi.Data.Services.Interface;
 using WareHousingWebApi.Entities.Entities;
 using WareHousingWebApi.Entities.Models;
 using WareHousingWebApi.Entities.Models.Dto;
 using WareHousingWebApi.WebFramework.ApiResult;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WareHousing.WebApi.Controller;
 
@@ -107,7 +100,7 @@ public class InvoiceApiController : ControllerBase
                         };
                     }
 
-                    var _productPrice = _invoiceRepo.GetPrices(model.productIds[i], model.fiscalYearId);
+                    var _productPrice = _invoiceRepo.GetPrices(model.productIds[i]);
 
                     var _InvoiceItem = new InvoiceItems()
                     {

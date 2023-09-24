@@ -17,3 +17,22 @@ public class WareHouseHandling2
     public int TotalProductCount { get; set; }
     public DateTime ExpiryDate { get; set; }
 }
+
+
+
+
+
+
+public class TransferToNewFiscalYear
+{
+    public int ProductId { get; set; }
+    public int TotalProductCount { get; set; }
+    public DateTime ExpiryDate { get; set; }
+}
+public class TransferToNewFiscalYear2
+{
+    public int ProductId { get; set; }
+    public int InventoryId { get; set; }
+    public int TotalProductCount { get; set; }
+    public DateTime ExpiryDate { get; set; }
+}

@@ -13,7 +13,7 @@ public interface IInvoiceRepo
     /// <param name="productId"></param>
     /// <param name="fiscalYearId"></param>
     /// <returns></returns>
-    GetPrice GetPrices(int productId, int fiscalYearId);
+    GetPrice GetPrices(int productId);
 
     Task<int> CalculateInvoicePrice(int[] productid, int[] count, int fiscalYaerId);
     Task<List<InvoiceList>> GetInvoiceList(InvoiceListDto model);

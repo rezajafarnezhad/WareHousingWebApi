@@ -30,10 +30,10 @@ public class ProductPriceApiController : ControllerBase
     }
 
 
-    [HttpGet("GetList/{fiscalYearId}")]
-    public async Task<ApiResponse> Get([FromRoute] int fiscalYearId)
+    [HttpGet("GetList")]
+    public async Task<ApiResponse> Get()
     {
-        var _data = await _productPriceRepo.GetProductsPrice(fiscalYearId);
+        var _data = await _productPriceRepo.GetProductsPrice();
 
         return _data != null
             ? new ApiResponse<IEnumerable<ProductsPriceInput>>()
@@ -86,8 +86,7 @@ public class ProductPriceApiController : ControllerBase
 
         var getProductPrice =  _context.productPriceUW.Get(
             c => c.ProductId == model.ProductId
-                        && c.FiscalYearId == model.FiscalYearId
-                        && c.ActionDate >= model.ActionDate.ConvertShamsiToMiladi());
+                 && c.ActionDate >= model.ActionDate.ConvertShamsiToMiladi());
 
         if (getProductPrice.Count() > 0)
             return new ApiResponse()
@@ -112,11 +111,10 @@ public class ProductPriceApiController : ControllerBase
 
     }
 
-    [HttpGet("GetProductPriceHistory/{productId}/{fiscalYearId}")]
-    public async Task<ApiResponse> GetProductPriceHistory([FromRoute] int productId, int fiscalYearId)
+    [HttpGet("GetProductPriceHistory/{productId}")]
+    public async Task<ApiResponse> GetProductPriceHistory([FromRoute] int productId)
     {
-        var _data =  _context.productPriceUW
-            .Get(c => c.ProductId == productId && c.FiscalYearId == fiscalYearId);
+        var _data =  _context.productPriceUW.Get(c => c.ProductId == productId);
 
         if (_data is null)
         {

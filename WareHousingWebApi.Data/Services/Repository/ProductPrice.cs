@@ -12,10 +12,10 @@ public class ProductPriceRepo :UnitOfWork , IProductPriceRepo
        
     }
 
-    public async Task<IEnumerable<ProductsPriceInput>> GetProductsPrice(int fiscalYearId)
+    public async Task<IEnumerable<ProductsPriceInput>> GetProductsPrice()
     {
 
-        var _productsPrice = this.productPriceUW.GetEn.Where(c => c.FiscalYearId == fiscalYearId).AsEnumerable();
+        var _productsPrice = this.productPriceUW.GetEn.AsEnumerable();
 
 
         var data =await this.productsUw.GetEn.Select(c => new ProductsPriceInput()
@@ -24,7 +24,7 @@ public class ProductPriceRepo :UnitOfWork , IProductPriceRepo
             ProductId = c.ProductId,
             ProductName = c.ProductName,
             ProductCode = c.ProductCode,
-            FiscalYearId = fiscalYearId,
+            
 
             ProductPriceId = _productsPrice.Where(w => w.ProductId == c.ProductId
                                                        && w.ActionDate <= DateTime.Now)

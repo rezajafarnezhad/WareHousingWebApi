@@ -31,6 +31,7 @@ public class Inventory : BaseEntity
     /// 6=مرجوغی
     /// 7=بالانس افزایشی
     /// 8=بالانس کاهشی
+    /// 9=انتفالی ار سال مالی جذیذ
     /// </summary>
     public byte OperationType { get; set; }
 

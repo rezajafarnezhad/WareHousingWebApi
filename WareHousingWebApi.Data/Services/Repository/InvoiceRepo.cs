@@ -22,7 +22,8 @@ public class InvoiceRepo : UnitOfWork, IInvoiceRepo
 
     public async Task<ProductItemsDto> GetProductItemInfo(int productCode, int wareHouseId, int fiscalYearId)
     {
-        var _productInfo = await
+        var _productInfo =
+            await
             this.productsUw
                 .GetEnNoTraking
             .Where(c => c.ProductCode == productCode)
@@ -32,7 +33,7 @@ public class InvoiceRepo : UnitOfWork, IInvoiceRepo
                 ProductName = c.ProductName,
             }).SingleOrDefaultAsync();
 
-        var ProductPrice = GetPrices(_productInfo.ProductId, fiscalYearId);
+        var ProductPrice = GetPrices(_productInfo.ProductId);
         _productInfo.PurchasePrice = ProductPrice.PurchasePrice;
         _productInfo.CoverPrice = ProductPrice.CoverPrice;
         _productInfo.SalesPrice = ProductPrice.SalesPrice;
@@ -59,6 +60,7 @@ public class InvoiceRepo : UnitOfWork, IInvoiceRepo
                 x.OperationType == 5 ? -x.ProductCountMain :
                 x.OperationType == 7 ? x.ProductCountMain :
                 x.OperationType == 8 ? -x.ProductCountMain :
+                x.OperationType == 9 ? x.ProductCountMain :
                 0);
         return ProductStock;
     }
@@ -67,13 +69,12 @@ public class InvoiceRepo : UnitOfWork, IInvoiceRepo
     /// به دست اودن فیمت های یک محصول
     /// </summary>
     /// <param name="productId"></param>
-    /// <param name="fiscalYearId"></param>
+    /// 
     /// <returns></returns>
-    public GetPrice GetPrices(int productId, int fiscalYearId)
+    public GetPrice GetPrices(int productId)
     {
         var _productsPrice = this.productPriceUW
             .GetEnNoTraking
-            .Where(c => c.FiscalYearId == fiscalYearId)
             .Where(c => c.ProductId == productId)
             .Where(c => c.ActionDate <= DateTime.Now)
             .OrderByDescending(c => c.ActionDate)
@@ -93,7 +94,7 @@ public class InvoiceRepo : UnitOfWork, IInvoiceRepo
 
         for (int i = 0; i < productid.Count(); i++)
         {
-            var _SalesPrice = GetPrices(productid[i], fiscalYaerId).SalesPrice;
+            var _SalesPrice = GetPrices(productid[i]).SalesPrice;
             totalPrice += _SalesPrice * count[i];
         }
         return totalPrice;
@@ -208,6 +209,7 @@ public class InvoiceRepo : UnitOfWork, IInvoiceRepo
                 this.invoiceItemsUW
                     .GetEnNoTraking
                     .Where(c => c.Invoice.WareHouseId == model.wareHouseId)
+                    .Where(c => c.Invoice.fiscalYearId == model.fiscalYearId)
                     .Where(c => c.Date.Date >= Fromdata.Date && c.Date.Date <= Todata.Date)
                     .Include(c => c.Product)
                     .Include(c => c.Invoice)

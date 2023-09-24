@@ -14,12 +14,13 @@ public class RialStockRepo : UnitOfWork, IRialStockRepo
     public async Task<List<RialStockDto>> GetRialStock(int fiscalYearId, int wareHouseId)
     {
         //لیست همه قیمت ها
-        var lstPriceList = this.productPriceUW.GetEn.Where(c => c.FiscalYearId == fiscalYearId).AsEnumerable();
+        var lstPriceList = this.productPriceUW.GetEn.AsEnumerable();
 
         //لیست همه تراکنش ها
         var StockList = this.inventoryUw.GetEn.Where(c => c.FiscalYearId == fiscalYearId && c.WareHouseId == wareHouseId).AsEnumerable();
 
-        var lstProductRialStock = await this.productsUw.GetEn.Select(c => new RialStockDto()
+        var lstProductRialStock = await this.productsUw.GetEn
+            .Select(c => new RialStockDto()
         {
 
             ProductId = c.ProductId,
@@ -33,7 +34,11 @@ public class RialStockRepo : UnitOfWork, IRialStockRepo
                         i.OperationType == 3 ? -i.ProductWastage :
                         i.OperationType == 4 ? i.ProductWastage :
                         i.OperationType == 6 ? i.ProductCountMain :
-                        i.OperationType == 5 ? -i.ProductCountMain : 0)
+                        i.OperationType == 5 ? -i.ProductCountMain :
+                        i.OperationType == 7 ? i.ProductCountMain :
+                        i.OperationType == 8 ? -i.ProductCountMain :
+                        i.OperationType == 9 ? i.ProductCountMain :
+                        0)
                     ,
 
             //به دست آوردن آخرین قیمت خرید محصول ایکس * موجودی
@@ -54,7 +59,12 @@ public class RialStockRepo : UnitOfWork, IRialStockRepo
                         i.OperationType == 3 ? -i.ProductWastage :
                         i.OperationType == 4 ? i.ProductWastage :
                         i.OperationType == 6 ? i.ProductCountMain :
-                        i.OperationType == 5 ? -i.ProductCountMain : 0)
+                        i.OperationType == 5 ? -i.ProductCountMain :
+                        i.OperationType == 7 ? i.ProductCountMain :
+                        i.OperationType == 8 ? -i.ProductCountMain :
+                        i.OperationType == 9 ? i.ProductCountMain :
+                        
+                        0)
             ,
 
             //به دست آوردن آخرین قیمت مصرف کننده محصول ایکس * موجودی
@@ -74,7 +84,11 @@ public class RialStockRepo : UnitOfWork, IRialStockRepo
                             i.OperationType == 3 ? -i.ProductWastage :
                             i.OperationType == 4 ? i.ProductWastage :
                             i.OperationType == 6 ? i.ProductCountMain :
-                            i.OperationType == 5 ? -i.ProductCountMain : 0)
+                            i.OperationType == 5 ? -i.ProductCountMain :
+                            i.OperationType == 7 ? i.ProductCountMain :
+                            i.OperationType == 8 ? -i.ProductCountMain :
+                            i.OperationType == 9 ? i.ProductCountMain :
+                            0)
 
             ,
 
@@ -95,7 +109,11 @@ public class RialStockRepo : UnitOfWork, IRialStockRepo
                         i.OperationType == 3 ? -i.ProductWastage :
                         i.OperationType == 4 ? i.ProductWastage :
                         i.OperationType == 6 ? i.ProductCountMain :
-                        i.OperationType == 5 ? -i.ProductCountMain : 0)
+                        i.OperationType == 5 ? -i.ProductCountMain :
+                        i.OperationType == 7 ? i.ProductCountMain :
+                        i.OperationType == 8 ? -i.ProductCountMain :
+                        i.OperationType == 9 ? i.ProductCountMain :
+                        0)
                     ,
 
             

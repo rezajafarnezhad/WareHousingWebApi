@@ -128,7 +128,7 @@ public class InventoryApiController : ControllerBase
             await _context.inventoryUw.GetEn
             .Where(c => c.ProductId == productid && c.WareHouseId == wareHouseId)
             .Where(c => c.FiscalYearId == fiscalYearId)
-            .Where(c => c.OperationType == 1)
+            .Where(c => c.OperationType == 1 || c.OperationType == 9)
             .OrderByDescending(c => c.ExpireData)
             .Select(c => new DropDownDto()
             {
@@ -421,4 +421,6 @@ public class InventoryApiController : ControllerBase
             Message = ApiStatusCode.Success.GetEnumDisplayName()
         };
     }
+
+
 }

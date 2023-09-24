@@ -19,7 +19,7 @@ public class WastageRialStockRepo : UnitOfWork, IWastageRialStockRepo
     public async Task<List<WastageRialStockDto>> GetWastageRialStock(int fiscalYearId, int wareHouseId)
     {
         //لیست همه قیمت ها
-        var lstPriceList = this.productPriceUW.GetEn.Where(c => c.FiscalYearId == fiscalYearId).AsEnumerable();
+        var lstPriceList = this.productPriceUW.GetEn.AsEnumerable();
 
         //لیست همه تراکنش ها
         var StockList = this.inventoryUw.GetEn.Where(c => c.FiscalYearId == fiscalYearId && c.WareHouseId == wareHouseId).Where(c=>c.OperationType==3 || c.OperationType==4).AsEnumerable();
