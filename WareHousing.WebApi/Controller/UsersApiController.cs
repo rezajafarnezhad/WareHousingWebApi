@@ -262,6 +262,97 @@ namespace WareHousing.WebApi.Controller
             };
         }
 
+        [HttpGet("GetAccessUser")]
+        public async Task<ApiResponse> GetAccessUser([FromQuery] string userId)
+        {
+            if(string.IsNullOrWhiteSpace(userId))
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.NotFound,
+                    Message = ApiStatusCode.NotFound.GetEnumDisplayName(),
+                };
+
+            try
+            {
+                var _user= await _userManager.FindByIdAsync(userId);
+                var _role = await _userManager.GetRolesAsync(_user);
+                return new ApiResponse<List<string>>()
+                {
+                    flag = true,
+                    Data = _role.ToList(),
+                    StatusCode = ApiStatusCode.Success,
+                    Message = ApiStatusCode.Success.GetEnumDisplayName(),
+                };
+
+            }
+            catch (Exception)
+            {
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.NotFound,
+                    Message = ApiStatusCode.NotFound.GetEnumDisplayName(),
+                };
+            }
+
+        }
+
+
+        [HttpPost("InsertAccess")]
+        public async Task<ApiResponse> InsertAccess([FromForm] UserAccess model)
+        {
+            if(string.IsNullOrWhiteSpace(model.UserIdAs))
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.ServerError,
+                    Message = ApiStatusCode.ServerError.GetEnumDisplayName(),
+                };
+
+            try
+            {
+                // دریافت اطلاعات user
+                var _user = await _userManager.FindByIdAsync(model.UserIdAs);
+
+                //تقش های کاربر
+                var _userRoles = await _userManager.GetRolesAsync(_user);
+
+                //حدف همه نقش ها
+               var _result = await _userManager.RemoveFromRolesAsync(_user,_userRoles);
+
+               //ثبت جدید دسترسی
+               if (model.CreateInvoice) await _userManager.AddToRoleAsync(_user, "CreateInvoice");
+               if (model.InvoiceList) await _userManager.AddToRoleAsync(_user, "InvoiceList");
+               if (model.Inventory) await _userManager.AddToRoleAsync(_user, "Inventory");
+               if (model.InvoiceSeparation) await _userManager.AddToRoleAsync(_user, "InvoiceSeparation");
+               if (model.WareHousingHandle) await _userManager.AddToRoleAsync(_user, "WareHousingHandle");
+               if (model.ProductFlow) await _userManager.AddToRoleAsync(_user, "ProductFlow");
+               if (model.AllProductInvoiced) await _userManager.AddToRoleAsync(_user, "AllProductInvoiced");
+               if (model.RiallyStock) await _userManager.AddToRoleAsync(_user, "RiallyStock");
+               if (model.WastageRiallyStock) await _userManager.AddToRoleAsync(_user, "WastageRiallyStock");
+               if (model.ProductLocation) await _userManager.AddToRoleAsync(_user, "ProductLocation");
+               if (model.ProductPrice) await _userManager.AddToRoleAsync(_user, "ProductPrice");
+
+               await _userManager.AddToRoleAsync(_user, "user");
+               return new ApiResponse()
+               {
+                   flag = true,
+                   StatusCode = ApiStatusCode.Success,
+                   Message = ApiStatusCode.Success.GetEnumDisplayName(),
+               };
+            }
+            catch (Exception)
+            {
+                return new ApiResponse()
+                {
+                    flag = false,
+                    StatusCode = ApiStatusCode.ServerError,
+                    Message = ApiStatusCode.ServerError.GetEnumDisplayName(),
+                };
+            }
+        }
+
     }
 }
 
