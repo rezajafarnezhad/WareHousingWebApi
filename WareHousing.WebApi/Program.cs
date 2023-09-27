@@ -1,5 +1,7 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using WareHousingWebApi.Data.DbContext;
 using WareHousingWebApi.Data.Services.Interface;
 using WareHousingWebApi.Data.Services.Repository;
 using WareHousingWebApi.Services.jwtService;
@@ -83,7 +85,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
-
+using var scope = app.Services.CreateScope();
+ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+context.Database.Migrate();
 
 app.UseStaticFiles();
 app.UseHttpsRedirection();
